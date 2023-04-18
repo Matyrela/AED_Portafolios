@@ -1,0 +1,45 @@
+EJ1:
+
+Precondiciones:
+La cola no debe de estar llena.
+
+Postcondiciones:
+Si la cola estaba vacía, ahora tiene un elemento.
+Si la cola no estaba vacía, ahora tiene un elemento más.
+Si la cola estaba llena, la operación falla y no se modifica.
+
+PoneEnCola(elemento)
+COMIENZO{
+	SI (cola.final + 1) % tamañoVector == cola.inicio{
+		DEVOLVER "Error, la cola esta llena"
+	}
+	SINO
+	{
+		cola.vector[cola.final] <- elemento
+		cola.final <- (cola.final + 1) % tamañoVector
+	}
+}
+
+EJ2:
+Precondiciones:
+La cola no está vacía.
+
+Postcondiciones:
+Si la cola tenía un solo elemento, vacíarla.
+Si la cola tenía más de un elemento, ahora tiene un elemento menos.
+Si la cola estaba vacía, la operación falla y no se modifica.
+
+QuitaDeCola()
+COMIENZO{
+	SI cola.inicio == cola.final {
+		DEVOLVER "Error, la cola esta vacia"
+	}
+	SINO
+	{
+		elemento <- cola.vector[cola.inicio]
+		cola.inicio <- (cola.inicio + 1) % tamañoVector
+		DEVOLVER elemento
+	}
+}
+
+
