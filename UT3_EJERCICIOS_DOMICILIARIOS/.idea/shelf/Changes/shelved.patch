@@ -1,0 +1,3682 @@
+Index: src/PD8/Sucursales.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD8/Sucursales.java b/src/PD8/Sucursales.java
+new file mode 100644
+--- /dev/null	(date 1681817841743)
++++ b/src/PD8/Sucursales.java	(date 1681817841743)
+@@ -0,0 +1,13 @@
++package PD8;
++
++public class Sucursales {
++    String location;
++
++    public Sucursales(String location) {
++        this.location = location;
++    }
++
++    public String getLocation() {
++        return location;
++    }
++}
+Index: src/PD8/main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD8/main.java b/src/PD8/main.java
+new file mode 100644
+--- /dev/null	(date 1681822040130)
++++ b/src/PD8/main.java	(date 1681822040130)
+@@ -0,0 +1,35 @@
++package PD8;
++
++import static PD8.Util.leerArchivo;
++
++/**
++ * • Agregar una sucursal ✓
++ * • Buscar una sucursal ✓
++ * • Quitar una sucursal ✓
++ * • Listar todas las sucursales ✓
++ * • Indicar la cantidad de sucursales ✓
++ * • Indicar si el directorio de sucursales está o no vacío ✓
++ */
++
++public class main {
++    public static void main(String[] args) {
++        Empresa empresa = new Empresa("EstructurasYAlgoritmos");
++
++        empresa.loadSucursales(leerArchivo("src/PD6/suc2.txt"));
++        empresa.removeSucursal("Shenzhen");
++        empresa.removeSucursal("Tokio");
++
++        System.out.println(empresa.getSucursales());
++    }
++}
++
++/**
++ * Ej 1:
++ * 107
++ *
++ * Ej 2:
++ * Shenzhen
++ *
++ * Ej3:
++ * Queda vacia.
++ */
+\ No newline at end of file
+Index: src/PD8/Empresa.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD8/Empresa.java b/src/PD8/Empresa.java
+new file mode 100644
+--- /dev/null	(date 1681819925224)
++++ b/src/PD8/Empresa.java	(date 1681819925224)
+@@ -0,0 +1,61 @@
++package PD8;
++
++import java.util.ArrayList;
++
++public class Empresa {
++    String name;
++    ArrayList<Sucursales> sucursales = new ArrayList<Sucursales>();
++
++    public Empresa(String name){
++        this.name = name;
++    }
++
++    public String getSucursales() {
++        StringBuilder sb = new StringBuilder();
++        for (Sucursales sucursale : sucursales) {
++            sb.append(sucursale.getLocation());
++            sb.append(", ");
++        }
++        return sb.toString();
++    }
++
++    public int getSucursalesNum() {
++        return sucursales.size();
++    }
++
++    public boolean isEmpty(){
++        return sucursales.isEmpty();
++    }
++
++    public Sucursales searchSucursal(String location){
++        for (int i = 0; i < sucursales.size(); i++) {
++            if(sucursales.get(i).location.equalsIgnoreCase(location)){
++                return sucursales.get(i);
++            }
++        }
++        return null;
++    }
++
++    public void removeSucursal(String location){
++        for (int i = 0; i < sucursales.size(); i++) {
++            if(sucursales.get(i).location.equalsIgnoreCase(location)){
++                sucursales.remove(sucursales.get(i));
++            }
++        }
++    }
++
++    public void removeSucursal(Sucursales sucu){
++        sucursales.remove(sucu);
++    }
++
++    public void addSucursales(Sucursales sucu) {
++        sucursales.add(sucu);
++    }
++
++    public void loadSucursales(String[] SucursalesTXT){
++        for (String s : SucursalesTXT) {
++            Sucursales sucursal = new Sucursales(s);
++            addSucursales(sucursal);
++        }
++    }
++}
+Index: src/PD6/Sucursales.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD6/Sucursales.java b/src/PD6/Sucursales.java
+new file mode 100644
+--- /dev/null	(date 1681820175070)
++++ b/src/PD6/Sucursales.java	(date 1681820175070)
+@@ -0,0 +1,13 @@
++package PD6;
++
++public class Sucursales {
++    String location;
++
++    public Sucursales(String location) {
++        this.location = location;
++    }
++
++    public String getLocation() {
++        return location;
++    }
++}
+Index: src/PD6/Util.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD6/Util.java b/src/PD6/Util.java
+new file mode 100644
+--- /dev/null	(date 1681820175040)
++++ b/src/PD6/Util.java	(date 1681820175040)
+@@ -0,0 +1,36 @@
++package PD6;
++
++import java.io.BufferedReader;
++import java.io.FileNotFoundException;
++import java.io.FileReader;
++import java.io.IOException;
++import java.util.ArrayList;
++
++public class Util {
++    public static String[] leerArchivo(String nombreCompletoArchivo) {
++        FileReader fr;
++        ArrayList<String> listaLineasArchivo = new ArrayList<String>();
++        try {
++            fr = new FileReader(nombreCompletoArchivo);
++            BufferedReader br = new BufferedReader(fr);
++            String lineaActual = br.readLine();
++            while (lineaActual != null) {
++                listaLineasArchivo.add(lineaActual);
++                lineaActual = br.readLine();
++            }
++            br.close();
++            fr.close();
++        } catch (FileNotFoundException e) {
++            System.out.println("Error al leer el archivo "
++                    + nombreCompletoArchivo);
++            e.printStackTrace();
++        } catch (IOException e) {
++            System.out.println("Error al leer el archivo "
++                    + nombreCompletoArchivo);
++            e.printStackTrace();
++        }
++        System.out.println("Archivo leido satisfactoriamente");
++
++        return listaLineasArchivo.toArray(new String[0]);
++    }
++}
+Index: src/PD8/Util.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD8/Util.java b/src/PD8/Util.java
+new file mode 100644
+--- /dev/null	(date 1681818079783)
++++ b/src/PD8/Util.java	(date 1681818079783)
+@@ -0,0 +1,36 @@
++package PD8;
++
++import java.io.BufferedReader;
++import java.io.FileNotFoundException;
++import java.io.FileReader;
++import java.io.IOException;
++import java.util.ArrayList;
++
++public class Util {
++    public static String[] leerArchivo(String nombreCompletoArchivo) {
++        FileReader fr;
++        ArrayList<String> listaLineasArchivo = new ArrayList<String>();
++        try {
++            fr = new FileReader(nombreCompletoArchivo);
++            BufferedReader br = new BufferedReader(fr);
++            String lineaActual = br.readLine();
++            while (lineaActual != null) {
++                listaLineasArchivo.add(lineaActual);
++                lineaActual = br.readLine();
++            }
++            br.close();
++            fr.close();
++        } catch (FileNotFoundException e) {
++            System.out.println("Error al leer el archivo "
++                    + nombreCompletoArchivo);
++            e.printStackTrace();
++        } catch (IOException e) {
++            System.out.println("Error al leer el archivo "
++                    + nombreCompletoArchivo);
++            e.printStackTrace();
++        }
++        System.out.println("Archivo leido satisfactoriamente");
++
++        return listaLineasArchivo.toArray(new String[0]);
++    }
++}
+Index: src/PD6/Empresa.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD6/Empresa.java b/src/PD6/Empresa.java
+new file mode 100644
+--- /dev/null	(date 1681820175050)
++++ b/src/PD6/Empresa.java	(date 1681820175050)
+@@ -0,0 +1,62 @@
++package PD6;
++
++import java.util.ArrayList;
++import java.util.LinkedList;
++
++public class Empresa {
++    String name;
++    LinkedList<Sucursales> sucursales = new LinkedList<>();
++
++    public Empresa(String name){
++        this.name = name;
++    }
++
++    public String getSucursales() {
++        StringBuilder sb = new StringBuilder();
++        for (Sucursales sucursale : sucursales) {
++            sb.append(sucursale.getLocation());
++            sb.append(", ");
++        }
++        return sb.toString();
++    }
++
++    public int getSucursalesNum() {
++        return sucursales.size();
++    }
++
++    public boolean isEmpty(){
++        return sucursales.isEmpty();
++    }
++
++    public Sucursales searchSucursal(String location){
++        for (int i = 0; i < sucursales.size(); i++) {
++            if(sucursales.get(i).location.equalsIgnoreCase(location)){
++                return sucursales.get(i);
++            }
++        }
++        return null;
++    }
++
++    public void removeSucursal(String location){
++        for (int i = 0; i < sucursales.size(); i++) {
++            if(sucursales.get(i).location.equalsIgnoreCase(location)){
++                sucursales.remove(sucursales.get(i));
++            }
++        }
++    }
++
++    public void removeSucursal(Sucursales sucu){
++        sucursales.remove(sucu);
++    }
++
++    public void addSucursales(Sucursales sucu) {
++        sucursales.add(sucu);
++    }
++
++    public void loadSucursales(String[] SucursalesTXT){
++        for (String s : SucursalesTXT) {
++            Sucursales sucursal = new Sucursales(s);
++            addSucursales(sucursal);
++        }
++    }
++}
+Index: src/PD6/sucursales.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD6/sucursales.txt b/src/PD6/sucursales.txt
+new file mode 100644
+--- /dev/null	(date 1681817355151)
++++ b/src/PD6/sucursales.txt	(date 1681817355151)
+@@ -0,0 +1,15 @@
++Montevideo
++Canelones
++Artigas
++Rivera
++Maldonado
++Rocha
++Pando
++Salto
++Paysandu
++Trinidad
++Florida
++Quebracho
++Colonia
++Acegua
++Piriapolis
+\ No newline at end of file
+Index: src/PD6/main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD6/main.java b/src/PD6/main.java
+new file mode 100644
+--- /dev/null	(date 1681820175059)
++++ b/src/PD6/main.java	(date 1681820175059)
+@@ -0,0 +1,26 @@
++package PD6;
++
++import static PD8.Util.leerArchivo;
++
++/**
++ * • Agregar una sucursal ✓
++ * • Buscar una sucursal ✓
++ * • Quitar una sucursal ✓
++ * • Listar todas las sucursales ✓
++ * • Indicar la cantidad de sucursales ✓
++ * • Indicar si el directorio de sucursales está o no vacío ✓
++ */
++
++public class main {
++    public static void main(String[] args) {
++        Empresa empresa = new Empresa("EstructurasYAlgoritmos");
++
++        empresa.loadSucursales(leerArchivo("src/PD8/sucursales.txt"));
++
++        System.out.println(empresa.searchSucursal("pando").location);
++        System.out.println(empresa.getSucursalesNum());
++        System.out.println(empresa.getSucursales());
++    }
++}
++
++//Al ser 15 sucursales y el ArrayList incrementa al doble, queda en 16 para 15 sucursales. en este caso aplica
+\ No newline at end of file
+Index: src/PD7/INodo.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD7/INodo.java b/src/PD7/INodo.java
+new file mode 100644
+--- /dev/null	(date 1681822217553)
++++ b/src/PD7/INodo.java	(date 1681822217553)
+@@ -0,0 +1,60 @@
++package PD7;
++
++public interface INodo<T> {
++
++    
++    /**
++     * devuelve el dato del nodo
++     * @return 
++     */
++    public T getDato();
++    
++    /**
++     * devuelve el siguiente del nodo
++     * @return 
++     */
++    public Nodo<T> getSiguiente();
++    
++    
++    /**
++     * "engancha" otro nodo a continuacion
++     * 
++     */
++    public void setSiguiente(Nodo<T> nodo);
++    
++    /**
++     * Imprime los datos del nodo
++     */
++    
++    
++    
++    public void imprimir();
++
++    /**
++     * Imprime la etiqueta del nodo
++     */
++    
++    public void imprimirEtiqueta();
++
++    
++    /**
++     * Retorna la etiqueta del nodo
++     *
++     * @return etiqueta del nodo
++     */
++    public Comparable getEtiqueta();
++//	/**
++//	 *
++//	 * @param unNodo
++//	 * @return devueve -1 si this tiene una clave menor, 0 si son iguales, 1 si es mayor
++//	 */
++//	public int compareTo(INodo<E> unNodo);
++
++    /**
++     *
++     * @param etiqueta
++     * @return devueve -1 si this tiene una etiqueta menor, 0 si son iguales, 1
++     * si es mayor
++     */
++    public int compareTo(Comparable etiqueta);
++}
+Index: src/PD7/Nodo.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD7/Nodo.java b/src/PD7/Nodo.java
+new file mode 100644
+--- /dev/null	(date 1681822217505)
++++ b/src/PD7/Nodo.java	(date 1681822217505)
+@@ -0,0 +1,48 @@
++package PD7;
++
++public class Nodo<T> implements INodo<T> {
++    private T dato;
++    private Nodo<T> siguiente;
++    private Comparable etiqueta;
++
++    public Nodo(Comparable etiqueta, T dato) {
++        this.etiqueta = etiqueta;
++        this.dato = dato;
++        this.siguiente = null;
++    }
++
++    @Override
++    public T getDato() {
++        return this.dato;
++    }
++
++    @Override
++    public Nodo<T> getSiguiente() {
++        return this.siguiente;
++    }
++
++    @Override
++    public void setSiguiente(Nodo<T> nodo) {
++        this.siguiente = nodo;
++    }
++
++    @Override
++    public void imprimir() {
++        System.out.println(this.dato.toString());
++    }
++
++    @Override
++    public void imprimirEtiqueta() {
++        System.out.println(this.etiqueta.toString());
++    }
++
++    @Override
++    public Comparable getEtiqueta() {
++        return this.etiqueta;
++    }
++
++    @Override
++    public int compareTo(Comparable etiqueta) {
++        return this.etiqueta.compareTo(etiqueta);
++    }
++}
+\ No newline at end of file
+Index: src/PD7/ILista.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD7/ILista.java b/src/PD7/ILista.java
+new file mode 100644
+--- /dev/null	(date 1681822217540)
++++ b/src/PD7/ILista.java	(date 1681822217540)
+@@ -0,0 +1,66 @@
++package PD7;
++
++public interface ILista<T> {
++
++    /**
++     * Metodo encargado de agregar un nodo al final de la lista.
++     *
++     * @param nodo - Nodo a agregar
++     */
++    public void insertar(Nodo<T> nodo);
++
++    public void insertar (Comparable etiqueta, T dato );
++    
++    
++    /**
++     * 
++     * 
++     * Metodo encargado de buscar un nodo cuya clave es la indicada.
++     *
++     * @param clave - Clave del nodo a buscar.
++     * @return El nodo encontrado. En caso de no encontrarlo, retornar null.
++     */
++    public Nodo<T> buscar(Comparable clave);
++
++    /**
++     * Metodo encargado de eliminar un nodo cuya clave es la indicada.
++     *
++     * @param clave Clave del nodo a eliminar.
++     * @return True en caso de que la eliminaci�n haya sido efectuada con �xito.
++     */
++    public boolean eliminar(Comparable clave);
++
++    /**
++     * Metodo encargado de imprimir en consola las claves de los nodos
++     * contenidos en la lista.
++     * @return 
++     */
++    public String imprimir();
++
++    /**
++     * Retorna un String con las claves separadas por el separador pasado por
++     * par�metro.
++     *
++     * @param separador Separa las claves
++     * @return
++     */
++    public String imprimir(String separador);
++
++    /**
++     * Retorna la cantidad de elementos de la lista. En caso de que la lista
++     * este vac�a, retornar 0.
++     *
++     * @return Cantidad de elementos de la lista.
++     */
++    public int cantElementos();
++
++    /**
++     * Indica si la lista contiene o no elementos.
++     *
++     * @return Si tiene elementos o no.
++     */
++    public boolean esVacia();
++    
++    public void setPrimero( Nodo<T> unNodo);
++
++}
+Index: src/PD7/main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD7/main.java b/src/PD7/main.java
+new file mode 100644
+--- /dev/null	(date 1681822217521)
++++ b/src/PD7/main.java	(date 1681822217521)
+@@ -0,0 +1,9 @@
++package PD7;
++
++public class main {
++    public static void main(String[] args) {
++
++        //Ej1
++
++    }
++}
+Index: src/PD14/Pseudocodigo.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD14/Pseudocodigo.txt b/src/PD14/Pseudocodigo.txt
+new file mode 100644
+--- /dev/null	(date 1681823081648)
++++ b/src/PD14/Pseudocodigo.txt	(date 1681823081648)
+@@ -0,0 +1,45 @@
++EJ1:
++
++Precondiciones:
++La cola no debe de estar llena.
++
++Postcondiciones:
++Si la cola estaba vacía, ahora tiene un elemento.
++Si la cola no estaba vacía, ahora tiene un elemento más.
++Si la cola estaba llena, la operación falla y no se modifica.
++
++PoneEnCola(elemento)
++COMIENZO{
++	SI (cola.final + 1) % tamañoVector == cola.inicio{
++		DEVOLVER "Error, la cola esta llena"
++	}
++	SINO
++	{
++		cola.vector[cola.final] <- elemento
++		cola.final <- (cola.final + 1) % tamañoVector
++	}
++}
++
++EJ2:
++Precondiciones:
++La cola no está vacía.
++
++Postcondiciones:
++Si la cola tenía un solo elemento, vacíarla.
++Si la cola tenía más de un elemento, ahora tiene un elemento menos.
++Si la cola estaba vacía, la operación falla y no se modifica.
++
++QuitaDeCola()
++COMIENZO{
++	SI cola.inicio == cola.final {
++		DEVOLVER "Error, la cola esta vacia"
++	}
++	SINO
++	{
++		elemento <- cola.vector[cola.inicio]
++		cola.inicio <- (cola.inicio + 1) % tamañoVector
++		DEVOLVER elemento
++	}
++}
++
++
+Index: src/PD7/Lista.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD7/Lista.java b/src/PD7/Lista.java
+new file mode 100644
+--- /dev/null	(date 1681822217490)
++++ b/src/PD7/Lista.java	(date 1681822217490)
+@@ -0,0 +1,95 @@
++package PD7;
++
++public class Lista<T> implements ILista<T> {
++    private Nodo<T> primero;
++    private int cantidadElementos;
++
++    public Lista() {
++        this.primero = null;
++        this.cantidadElementos = 0;
++    }
++
++    @Override
++    public void insertar(Nodo<T> nodo) {
++        if (this.primero == null) {
++            this.primero = nodo;
++        } else {
++            Nodo<T> actual = this.primero;
++            while (actual.getSiguiente() != null) {
++                actual = actual.getSiguiente();
++            }
++            actual.setSiguiente(nodo);
++        }
++        this.cantidadElementos++;
++    }
++
++    @Override
++    public void insertar(Comparable etiqueta, T dato) {
++        Nodo<T> nodo = new Nodo<>(etiqueta, dato);
++        this.insertar(nodo);
++    }
++
++    @Override
++    public Nodo<T> buscar(Comparable clave) {
++        Nodo<T> actual = this.primero;
++        while (actual != null) {
++            if (actual.getEtiqueta().equals(clave)) {
++                return actual;
++            }
++            actual = actual.getSiguiente();
++        }
++        return null;
++    }
++
++    @Override
++    public boolean eliminar(Comparable clave) {
++        Nodo<T> actual = this.primero;
++        Nodo<T> anterior = null;
++        while (actual != null) {
++            if (actual.getEtiqueta().equals(clave)) {
++                if (anterior == null) {
++                    this.primero = actual.getSiguiente();
++                } else {
++                    anterior.setSiguiente(actual.getSiguiente());
++                }
++                this.cantidadElementos--;
++                return true;
++            }
++            anterior = actual;
++            actual = actual.getSiguiente();
++        }
++        return false;
++    }
++
++    @Override
++    public String imprimir() {
++        return this.imprimir(" ");
++    }
++
++    @Override
++    public String imprimir(String separador) {
++        StringBuilder sb = new StringBuilder();
++        Nodo<T> actual = this.primero;
++        while (actual != null) {
++            sb.append(actual.getDato());
++            sb.append(separador);
++            actual = actual.getSiguiente();
++        }
++        return sb.toString();
++    }
++
++    @Override
++    public int cantElementos() {
++        return this.cantidadElementos;
++    }
++
++    @Override
++    public boolean esVacia() {
++        return (this.primero == null);
++    }
++
++    @Override
++    public void setPrimero(Nodo<T> unNodo) {
++        this.primero = unNodo;
++    }
++}
+\ No newline at end of file
+Index: src/PD1/ej3.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD1/ej3.java b/src/PD1/ej3.java
+new file mode 100644
+--- /dev/null	(date 1681816714989)
++++ b/src/PD1/ej3.java	(date 1681816714989)
+@@ -0,0 +1,30 @@
++package PD1;
++
++public class ej3 {
++}
++
++/**
++ * Ejercicio #3
++ * Sean nodo1, nodo2 y nodo3 tres nodos consecutivos de una lista (nodo2 es el siguiente a
++ * nodo1 y nodo3 es el siguiente a nodo2).
++ * Analice el siguiente fragmento de código (utilice dibujos o diagramas para clarificar qué es lo
++ * que sucede) y responda las preguntas proyectadas en pantalla:
++ *
++ * Nuevo nodo otroNodo
++ * otroNodo.siguiente  nodo1.siguiente
++ * nodo1.siguiente  otroNodo
++ *
++ * a) Inserta “otroNodo” en la lista, quedando como anterior a nodo1.
++ * b) Inserta “otroNodo” en la lista, quedando entre nodo1 y nodo2.
++ * c) Elimina nodo2 de la lista.
++ * d) Dará error en tiempo de ejecución si nodo1 es el primero o nodo3 es el último.
++ *
++ * ----------------------------------------------------------------------------------------------------
++ *
++ * nodo1 -> nodo2 -> nodo3 | otroNodo
++ *
++ * nodo1 -> otroNodo -> nodo2 -> nodo3
++ *
++ * b)
++ *
++ */
+\ No newline at end of file
+Index: src/PD1/ej6.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD1/ej6.java b/src/PD1/ej6.java
+new file mode 100644
+--- /dev/null	(date 1681816714989)
++++ b/src/PD1/ej6.java	(date 1681816714989)
+@@ -0,0 +1,32 @@
++package PD1;
++
++public class ej6 {
++}
++/**
++ *
++ * Escenario:
++ * Se desea llevar un registro de asistencia de un cierto curso universitario, el cual contará con
++ * una cantidad no determinada inicialmente de alumnos. Para ello, se ha decidido utilizar una
++ * lista para representar los alumnos en este curso.
++ * Cada elemento de la lista entonces tendrá un identificador del alumno y un campo que se ha
++ * de incrementar cada vez que el alumno concurra a una clase. También se desea registrar el
++ * total de clases impartidas en el curso, y con este dato luego para cada alumno obtener el
++ * porcentaje de asistencia a las clases.
++ * Las listas pueden implementarse físicamente de dos formas básicas: utilizando un array, o
++ * armando una lista encadenada. Se desea la opinión experta de tu Equipo para determinar qué
++ * utilizar para resolver eficientemente el problema planteado.
++ * a) ¿Cuál es el costo de memoria en cada caso?
++ * b) ¿Cuáles son las consideraciones que tu Equipo haría referentes a la cantidad de
++ * alumnos del curso que soporta cada tipo de estructura? (puedes considerar que, como
++ * en la UCU, las inscripciones al curso suelen estar habilitadas desde varias semanas
++ * antes de empezar el curso hasta dos semanas después de haber comenzado)
++ *
++ * ----------------------------------------------------------------------------------------------------
++ *
++ * a) El costo de memoria de cada caso depende de la cantidad de alumnos no se puede saber sin el numero de alumnos.
++ *
++ * b) Si la cantidad de alumnos en el curso es variable, puede ser más eficiente utilizar una lista encadenada
++ * a menos que sepamos realmente cuantos alumnos van a ser en total, ya que la lista enlazada ocupa mas memoria si se saben cuantos alumnos son
++ * resumiendo: si se saben cuantos alumnos son ArrayList sino se sabe, linkedList.
++ *
++ */
+Index: src/PD1/ej5.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD1/ej5.java b/src/PD1/ej5.java
+new file mode 100644
+--- /dev/null	(date 1681816714989)
++++ b/src/PD1/ej5.java	(date 1681816714989)
+@@ -0,0 +1,28 @@
++package PD1;
++
++public class ej5 {
++}
++
++/**
++ * Analice el siguiente fragmento de código (utilice dibujos o diagramas para clarificar qué es lo
++ * que sucede) y responda las preguntas proyectadas en pantalla:
++ *
++ * Nuevo nodo otroNodo
++ * Nuevo nodo nodoActual
++ * nodoActual  primero
++ * mientras nodoActual.siguiente <> nulo hacer
++ *  nodoActual  nodoActual.siguiente
++ * fin mientras
++ * nodoActual.siguiente  otroNodo
++ *
++ * a) Inserta correctamente “otroNodo” en la lista, quedando como último nodo.
++ * b) Inserta correctamente “otroNodo” en la lista, quedando como primer nodo.
++ * c) El algoritmo está mal hecho, ya que dará error en tiempo de ejecución si la lista está
++ * vacía.
++ * d) El algoritmo está mal hecho, ya que dará siempre error en tiempo de ejecución
++ *
++ * ----------------------------------------------------------------------------------------------------
++ *
++ * a)
++ *
++ */
+Index: UT3_EJERCICIOS_DOMICILIARIOS.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/UT3_EJERCICIOS_DOMICILIARIOS.iml b/UT3_EJERCICIOS_DOMICILIARIOS.iml
+new file mode 100644
+--- /dev/null	(date 1681816714973)
++++ b/UT3_EJERCICIOS_DOMICILIARIOS.iml	(date 1681816714973)
+@@ -0,0 +1,11 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<module type="JAVA_MODULE" version="4">
++  <component name="NewModuleRootManager" inherit-compiler-output="true">
++    <exclude-output />
++    <content url="file://$MODULE_DIR$">
++      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
++    </content>
++    <orderEntry type="inheritedJdk" />
++    <orderEntry type="sourceFolder" forTests="false" />
++  </component>
++</module>
+\ No newline at end of file
+Index: src/PD1/ej4.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD1/ej4.java b/src/PD1/ej4.java
+new file mode 100644
+--- /dev/null	(date 1681816714989)
++++ b/src/PD1/ej4.java	(date 1681816714989)
+@@ -0,0 +1,28 @@
++package PD1;
++
++public class ej4 {
++}
++
++/**
++ * Analice el siguiente fragmento de código (utilice dibujos o diagramas para clarificar qué es lo
++ * que sucede) y responda las preguntas proyectadas en pantalla:
++ *
++ * Nuevo nodo otroNodo
++ * Nuevo nodo nodoActual
++ * nodoActual  primero
++ * mientras nodoActual <> nulo hacer
++ *  nodoActual  nodoActual.siguiente
++ * fin mientras
++ * nodoActual.siguiente  otroNodo
++ *
++ * a) Inserta correctamente “otroNodo” en la lista, quedando como último nodo.
++ * b) Inserta correctamente “otroNodo” en la lista, quedando como primer nodo.
++ * c) El algoritmo está mal hecho, ya que dará error en tiempo de ejecución si la lista está
++ * vacía.
++ * d) El algoritmo está mal hecho, ya que dará siempre error en tiempo de ejecución.
++ *
++ * ----------------------------------------------------------------------------------------------------
++ *
++ * a)
++ *
++ */
+\ No newline at end of file
+Index: src/PD1/ej1.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD1/ej1.java b/src/PD1/ej1.java
+new file mode 100644
+--- /dev/null	(date 1681816714989)
++++ b/src/PD1/ej1.java	(date 1681816714989)
+@@ -0,0 +1,26 @@
++package PD1;
++
++public class ej1 {
++}
++/**
++ * Ejercicio #1
++ * Sean nodo1, nodo2 y nodo3 tres nodos consecutivos de una lista (nodo2 es el siguiente a
++ * nodo1 y nodo3 es el siguiente a nodo2).
++ * Analice el siguiente fragmento de código (utilice dibujos o diagramas para clarificar qué es lo
++ * que sucede):
++ *
++ * Nuevo nodo otroNodo
++ * otroNodo.siguiente  nodo1
++ * nodo2.siguiente  nodo3
++ *
++ * a) Inserta “otroNodo” en la lista, quedando como anterior a nodo1.
++ * b) Inserta “otroNodo” en la lista, quedando entre nodo1 y nodo2.
++ * c) Elimina nodo2 de la lista.
++ * d) No tiene ningún efecto sobre la lista.
++ *
++ * ----------------------------------------------------------------------------------------------------
++ *
++ * a)
++ *
++ * */
++
+Index: src/PD3/ILista.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD3/ILista.java b/src/PD3/ILista.java
+new file mode 100644
+--- /dev/null	(date 1681816714989)
++++ b/src/PD3/ILista.java	(date 1681816714989)
+@@ -0,0 +1,66 @@
++package PD3;
++
++public interface ILista<T> {
++
++    /**
++     * Metodo encargado de agregar un nodo al final de la lista.
++     *
++     * @param nodo - Nodo a agregar
++     */
++    public void insertar(Nodo<T> nodo);
++
++    public void insertar (Comparable etiqueta, T dato );
++    
++    
++    /**
++     * 
++     * 
++     * Metodo encargado de buscar un nodo cuya clave es la indicada.
++     *
++     * @param clave - Clave del nodo a buscar.
++     * @return El nodo encontrado. En caso de no encontrarlo, retornar null.
++     */
++    public Nodo<T> buscar(Comparable clave);
++
++    /**
++     * Metodo encargado de eliminar un nodo cuya clave es la indicada.
++     *
++     * @param clave Clave del nodo a eliminar.
++     * @return True en caso de que la eliminaci�n haya sido efectuada con �xito.
++     */
++    public boolean eliminar(Comparable clave);
++
++    /**
++     * Metodo encargado de imprimir en consola las claves de los nodos
++     * contenidos en la lista.
++     * @return 
++     */
++    public String imprimir();
++
++    /**
++     * Retorna un String con las claves separadas por el separador pasado por
++     * par�metro.
++     *
++     * @param separador Separa las claves
++     * @return
++     */
++    public String imprimir(String separador);
++
++    /**
++     * Retorna la cantidad de elementos de la lista. En caso de que la lista
++     * este vac�a, retornar 0.
++     *
++     * @return Cantidad de elementos de la lista.
++     */
++    public int cantElementos();
++
++    /**
++     * Indica si la lista contiene o no elementos.
++     *
++     * @return Si tiene elementos o no.
++     */
++    public boolean esVacia();
++    
++    public void setPrimero( Nodo<T> unNodo);    
++
++}
+Index: src/PD3/main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD3/main.java b/src/PD3/main.java
+new file mode 100644
+--- /dev/null	(date 1681816714989)
++++ b/src/PD3/main.java	(date 1681816714989)
+@@ -0,0 +1,47 @@
++package PD3;
++
++public class main {
++    public static void main(String[] args) {
++
++        // Crear lista vacía
++        Lista<String> lista = new Lista<String>();
++
++        // Insertar elementos en la lista
++        lista.insertar(new Nodo<String>("a", "Elemento a"));
++        lista.insertar(new Nodo<String>("c", "Elemento c"));
++        lista.insertar(new Nodo<String>("b", "Elemento b"));
++
++        System.out.println("---------------------------------------");
++
++        System.out.println("Lista original:");
++        System.out.println(lista.imprimir(" -> "));
++
++        System.out.println("---------------------------------------");
++
++        lista.eliminar("c");
++        System.out.println("Elimino c...");
++        System.out.println("Lista actualizada:");
++        System.out.println(lista.imprimir(" -> "));
++
++        System.out.println("---------------------------------------");
++
++        System.out.println("Busco elemento b...");
++        Nodo<String> nodo = lista.buscar("b");
++        if (nodo != null) {
++            System.out.println("Elemento encontrado: " + nodo.getDato());
++        } else {
++            System.out.println("Elemento no encontrado");
++        }
++
++        System.out.println("---------------------------------------");
++
++        System.out.println("Añadiendo d...");
++        Nodo<String> nodoNuevo = new Nodo<String>("d", "Elemento d");
++        lista.insertar(nodoNuevo);
++        System.out.println("Lista actualizada:");
++        System.out.println(lista.imprimir(" -> "));
++
++        System.out.println("---------------------------------------");
++
++    }
++}
+Index: src/PD1/ej2.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD1/ej2.java b/src/PD1/ej2.java
+new file mode 100644
+--- /dev/null	(date 1681816714989)
++++ b/src/PD1/ej2.java	(date 1681816714989)
+@@ -0,0 +1,25 @@
++package PD1;
++
++public class ej2 {
++}
++
++/**
++ * Sean nodo1, nodo2 y nodo3 tres nodos consecutivos de una lista (nodo2 es el siguiente a
++ * nodo1 y nodo3 es el siguiente a nodo2).
++ * Analice el siguiente fragmento de código (utilice dibujos o diagramas para clarificar qué es lo
++ * que sucede):
++ *
++ * Nuevo nodo otroNodo
++ * otroNodo  nodo1.siguiente
++ * nodo1.siguiente  nodo3
++ *
++ * a) Inserta “otroNodo” en la lista, quedando como anterior a nodo1.
++ * b) Inserta “otroNodo” en la lista, quedando entre nodo1 y nodo2.
++ * c) Elimina nodo2 de la lista.
++ * d) No tiene ningún efecto sobre la lista.
++ *
++ * ----------------------------------------------------------------------------------------------------
++ *
++ * b)
++ *
++ */
+\ No newline at end of file
+Index: src/PD2/main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD2/main.java b/src/PD2/main.java
+new file mode 100644
+--- /dev/null	(date 1681816714989)
++++ b/src/PD2/main.java	(date 1681816714989)
+@@ -0,0 +1,16 @@
++package PD2;
++
++public class main {
++    /**
++     * UNIDAD TEMÁTICA 3: Listas, Pilas y Colas
++     * PRACTICOS DOMICILIARIOS INDIVIDUALES - FORMULACION DE
++     * SEUDOCÓDIGO
++     * En el Ejercicio #2 del Trabajo de Aplicación #1, se debía desarrollar un algoritmo en
++     * pseudocódigo, siguiendo con las guías y estándares publicados.
++     *
++     * https://github.com/panchei19/trabajo_de_aplicacion_introduccion_a_java/blob/main/UT1_TA1/UT1_TA1_-_Eje2_Listo.pdf
++     * TA1 ej 2, en ese ej no hay que hacer un pseudocodigo.
++     */
++
++
++}
+Index: src/PD3/INodo.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD3/INodo.java b/src/PD3/INodo.java
+new file mode 100644
+--- /dev/null	(date 1681816714989)
++++ b/src/PD3/INodo.java	(date 1681816714989)
+@@ -0,0 +1,60 @@
++package PD3;
++
++public interface INodo<T> {
++
++    
++    /**
++     * devuelve el dato del nodo
++     * @return 
++     */
++    public T getDato();
++    
++    /**
++     * devuelve el siguiente del nodo
++     * @return 
++     */
++    public Nodo<T> getSiguiente();
++    
++    
++    /**
++     * "engancha" otro nodo a continuacion
++     * 
++     */
++    public void setSiguiente(Nodo<T> nodo);
++    
++    /**
++     * Imprime los datos del nodo
++     */
++    
++    
++    
++    public void imprimir();
++
++    /**
++     * Imprime la etiqueta del nodo
++     */
++    
++    public void imprimirEtiqueta();
++
++    
++    /**
++     * Retorna la etiqueta del nodo
++     *
++     * @return etiqueta del nodo
++     */
++    public Comparable getEtiqueta();
++//	/**
++//	 *
++//	 * @param unNodo
++//	 * @return devueve -1 si this tiene una clave menor, 0 si son iguales, 1 si es mayor
++//	 */
++//	public int compareTo(INodo<E> unNodo);
++
++    /**
++     *
++     * @param etiqueta
++     * @return devueve -1 si this tiene una etiqueta menor, 0 si son iguales, 1
++     * si es mayor
++     */
++    public int compareTo(Comparable etiqueta);
++}
+Index: src/PD4/IProducto.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD4/IProducto.java b/src/PD4/IProducto.java
+new file mode 100644
+--- /dev/null	(date 1681816714999)
++++ b/src/PD4/IProducto.java	(date 1681816714999)
+@@ -0,0 +1,38 @@
++package PD4;
++public interface IProducto{
++
++    /**
++     * Retorna el codigo del Producto.
++     *
++     * @return codigo del Producto.
++     */
++    public Comparable getEtiqueta();
++
++    /**
++     * Retorna el precio unitario del Producto.
++     *
++     * @return precio del Producto.
++     */
++    public Integer getPrecio();
++
++    public void setPrecio(Integer precio);
++
++    /**
++     * Retorna el stock del Producto.
++     *
++     * @return stock del Producto.
++     */
++    public Integer getStock();
++
++    public void setStock(Integer stock);
++
++    /**
++     * Retorna la descripcion/nombre del Producto.
++     *
++     * @return descripci�n del Producto.
++     */
++    public String getNombre();
++
++    public void setNombre(String nombre);
++
++}
+Index: src/PD3/Lista.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD3/Lista.java b/src/PD3/Lista.java
+new file mode 100644
+--- /dev/null	(date 1681816714989)
++++ b/src/PD3/Lista.java	(date 1681816714989)
+@@ -0,0 +1,95 @@
++package PD3;
++
++public class Lista<T> implements ILista<T> {
++    private Nodo<T> primero;
++    private int cantidadElementos;
++
++    public Lista() {
++        this.primero = null;
++        this.cantidadElementos = 0;
++    }
++
++    @Override
++    public void insertar(Nodo<T> nodo) {
++        if (this.primero == null) {
++            this.primero = nodo;
++        } else {
++            Nodo<T> actual = this.primero;
++            while (actual.getSiguiente() != null) {
++                actual = actual.getSiguiente();
++            }
++            actual.setSiguiente(nodo);
++        }
++        this.cantidadElementos++;
++    }
++
++    @Override
++    public void insertar(Comparable etiqueta, T dato) {
++        Nodo<T> nodo = new Nodo<>(etiqueta, dato);
++        this.insertar(nodo);
++    }
++
++    @Override
++    public Nodo<T> buscar(Comparable clave) {
++        Nodo<T> actual = this.primero;
++        while (actual != null) {
++            if (actual.getEtiqueta().equals(clave)) {
++                return actual;
++            }
++            actual = actual.getSiguiente();
++        }
++        return null;
++    }
++
++    @Override
++    public boolean eliminar(Comparable clave) {
++        Nodo<T> actual = this.primero;
++        Nodo<T> anterior = null;
++        while (actual != null) {
++            if (actual.getEtiqueta().equals(clave)) {
++                if (anterior == null) {
++                    this.primero = actual.getSiguiente();
++                } else {
++                    anterior.setSiguiente(actual.getSiguiente());
++                }
++                this.cantidadElementos--;
++                return true;
++            }
++            anterior = actual;
++            actual = actual.getSiguiente();
++        }
++        return false;
++    }
++
++    @Override
++    public String imprimir() {
++        return this.imprimir(" ");
++    }
++
++    @Override
++    public String imprimir(String separador) {
++        StringBuilder sb = new StringBuilder();
++        Nodo<T> actual = this.primero;
++        while (actual != null) {
++            sb.append(actual.getDato());
++            sb.append(separador);
++            actual = actual.getSiguiente();
++        }
++        return sb.toString();
++    }
++
++    @Override
++    public int cantElementos() {
++        return this.cantidadElementos;
++    }
++
++    @Override
++    public boolean esVacia() {
++        return (this.primero == null);
++    }
++
++    @Override
++    public void setPrimero(Nodo<T> unNodo) {
++        this.primero = unNodo;
++    }
++}
+\ No newline at end of file
+Index: src/PD3/Nodo.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD3/Nodo.java b/src/PD3/Nodo.java
+new file mode 100644
+--- /dev/null	(date 1681816714989)
++++ b/src/PD3/Nodo.java	(date 1681816714989)
+@@ -0,0 +1,48 @@
++package PD3;
++
++public class Nodo<T> implements INodo<T> {
++    private T dato;
++    private Nodo<T> siguiente;
++    private Comparable etiqueta;
++
++    public Nodo(Comparable etiqueta, T dato) {
++        this.etiqueta = etiqueta;
++        this.dato = dato;
++        this.siguiente = null;
++    }
++
++    @Override
++    public T getDato() {
++        return this.dato;
++    }
++
++    @Override
++    public Nodo<T> getSiguiente() {
++        return this.siguiente;
++    }
++
++    @Override
++    public void setSiguiente(Nodo<T> nodo) {
++        this.siguiente = nodo;
++    }
++
++    @Override
++    public void imprimir() {
++        System.out.println(this.dato.toString());
++    }
++
++    @Override
++    public void imprimirEtiqueta() {
++        System.out.println(this.etiqueta.toString());
++    }
++
++    @Override
++    public Comparable getEtiqueta() {
++        return this.etiqueta;
++    }
++
++    @Override
++    public int compareTo(Comparable etiqueta) {
++        return this.etiqueta.compareTo(etiqueta);
++    }
++}
+\ No newline at end of file
+Index: src/PD4/IAlmacen.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD4/IAlmacen.java b/src/PD4/IAlmacen.java
+new file mode 100644
+--- /dev/null	(date 1681816714999)
++++ b/src/PD4/IAlmacen.java	(date 1681816714999)
+@@ -0,0 +1,98 @@
++package PD4;
++public interface IAlmacen {
++
++    public String getDireccion();
++
++    public void setDireccion(String direccion);
++
++    public String getTelefono();
++
++    public void setTelefono(String telefono);
++
++    public String getNombre();
++
++    public Lista getListaProductos();
++
++    /**
++     * Incorporar un nuevo producto al supermercado.
++     *
++     * @param unProducto
++     */
++    public void insertarProducto(Producto unProducto);
++
++    /**
++     * Eliminar productos que ya no se venden (por no ser comercializados m�s).
++     *
++     * @param clave
++     * @return
++     */
++    public boolean eliminar(Comparable clave);
++
++    /**
++     * Imprime la lista de productos
++     *
++     * @return
++     */
++    public String imprimirProductos();
++
++    /**
++     * Dado un separador ej.:",", ";", imprime los productos separados por tal
++     * caracter
++     *
++     * @param separador
++     * @return
++     */
++    public String imprimirSeparador(String separador);
++
++    /**
++     * Agregar stock a un producto existente.
++     *
++     * @param clave
++     * @param cantidad
++     * @return
++     */
++    public Boolean agregarStock(Comparable clave, Integer cantidad);
++
++    /**
++     * Simular la venta de un producto (reducir el stock de un producto
++     * existente
++     *
++     * @param clave
++     * @param cantidad
++     * @return
++     */
++    public Integer restarStock(Comparable clave, Integer cantidad);
++
++    /**
++     * Dado un código de producto, indicar las existencias del mismo en el
++     * almac�n.
++     *
++     * @param clave
++     * @return
++     */
++    public Producto buscarPorCodigo(Comparable clave);
++
++    /**
++     * Listar todos los productos registrados, ordenados por nombre, presentando
++     * adem�s su stock. Imprime por consola la lista de todos los productos
++     * registrados y su stock actual.
++     */
++    public void listarOrdenadoPorNombre();
++
++    /**
++     * Busca un producto por su descripci�n.
++     *
++     * @param descripcion
++     * @return
++     */
++    public Producto buscarPorDescripcion(String descripcion);
++
++    /**
++     * Retorna el tama�o del almacen: cantidad de productos. No es lo mismo que
++     * el total de stock, sino que ser�a en definitiva el tama�o de la lista.
++     *
++     * @return
++     */
++    public int cantidadProductos();
++
++}
+Index: src/PD4/Nodo.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD4/Nodo.java b/src/PD4/Nodo.java
+new file mode 100644
+--- /dev/null	(date 1681816714999)
++++ b/src/PD4/Nodo.java	(date 1681816714999)
+@@ -0,0 +1,72 @@
++package PD4;
++
++/**
++ *
++ * @author ernesto
++ * @param <T>
++ */
++public class Nodo<T> implements INodo<T> {
++
++    private final Comparable etiqueta;
++    private T dato;
++    private Nodo<T> siguiente = null;
++
++    public Nodo(Comparable etiqueta, T dato ) {
++        this.etiqueta = etiqueta;
++        this.dato = dato;
++    }
++
++    public T getDato() {
++        return this.dato;
++    }
++
++    public void setDato(T dato) {
++        this.dato = dato;
++
++    }
++
++    @Override
++    public Comparable getEtiqueta() {
++        return this.etiqueta;
++    }
++
++    @Override
++    public void imprimir() {
++        System.out.println(dato.toString());
++    }
++
++    @Override
++    public void imprimirEtiqueta() {
++        System.out.println(this.etiqueta);
++    }
++
++    public Nodo<T> clonar() {
++        return new Nodo<>(this.etiqueta, this.dato);
++    }
++
++    /**
++     *
++     * @param unNodo
++     * @return
++     */
++
++    public boolean equals(Nodo unNodo) {
++        return this.dato.equals(unNodo.getDato());
++    }
++
++    @Override
++    public int compareTo(Comparable etiqueta) {
++        return this.etiqueta.compareTo(etiqueta);
++    }
++
++    @Override
++    public Nodo<T> getSiguiente() {
++        return this.siguiente;
++    }
++
++    @Override
++    public void setSiguiente(Nodo<T> nodo) {
++        this.siguiente = nodo;
++    }
++
++}
+Index: src/PD4/main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD4/main.java b/src/PD4/main.java
+new file mode 100644
+--- /dev/null	(date 1681816715005)
++++ b/src/PD4/main.java	(date 1681816715005)
+@@ -0,0 +1,73 @@
++package PD4;
++
++import java.util.Arrays;
++
++public class main {
++    public static void main(String[] args){
++        System.out.println("---------------------------- PARTE 1 ----------------------------");
++
++        //Parte 1, leer atlas, actualizar el almacen y decir el monto de los productos
++
++        //Leo el archivo
++        String[] content = ManejadorArchivosGenerico.leerArchivo("src/PD4/ArchivosAlmacen/altas.txt");
++
++        //Arreglo errores del archivo.
++        for (int element = 0; element < content.length; element++) {
++            content[element] = content[element].replaceAll("[^a-zA-Z0-9, ]", "");
++        }
++
++        //Creo el almacen
++        Almacen almacen = new Almacen();
++
++        //int de valor unitario.
++        int value = 0;
++
++        for (int e = 0; e < content.length; e++) {
++            String[] actual = content[e].split(",");
++
++            int prodID = Integer.parseInt(actual[0]);
++            String prodDesc = actual[1];
++            int prodPrice = Integer.parseInt(actual[2]);
++            int prodCant = Integer.parseInt(actual[3]);
++
++            value += prodPrice * prodCant;
++
++            Producto p = new Producto(prodID, prodDesc, prodPrice, prodCant);
++            almacen.insertarProducto(p);
++        }
++
++
++        System.out.println(almacen.getListaProductos().imprimir("\n "));
++        System.out.println("Nuevo valor: $" + value);
++
++        System.out.println("---------------------------- PARTE 2 ----------------------------");
++
++        //Parte 2
++
++        String[] ventas = ManejadorArchivosGenerico.leerArchivo("src/PD4/ArchivosAlmacen/ventas.txt");
++
++        //Arreglo errores del archivo.
++        for (int element = 0; element < ventas.length; element++) {
++            ventas[element] = ventas[element].replaceAll("[^a-zA-Z0-9, ]", "");
++        }
++
++        int reducido = 0;
++
++        for (int e = 0; e < ventas.length; e++) {
++            String[] actual = ventas[e].split(",");
++
++            int prodID = Integer.parseInt(actual[0]);
++            int prodCant = Integer.parseInt(actual[1]);
++
++            Nodo<Producto> producto = almacen.getListaProductos().buscar(prodID);
++
++            reducido -= producto.getDato().getProductPrice() * prodCant;
++
++            almacen.restarStock(prodID, prodCant);
++        }
++
++
++        System.out.println(almacen.getListaProductos().imprimir("\n "));
++        System.out.println("Nuevo valor: $" + reducido);
++    }
++}
+Index: src/PD4/Almacen.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD4/Almacen.java b/src/PD4/Almacen.java
+new file mode 100644
+--- /dev/null	(date 1681816714989)
++++ b/src/PD4/Almacen.java	(date 1681816714989)
+@@ -0,0 +1,106 @@
++package PD4;
++
++public class Almacen implements IAlmacen {
++
++    private String direccion;
++    private String telefono;
++    private String nombre;
++    private Lista listaProductos = new Lista<Producto>();
++
++    @Override
++    public String getDireccion() {
++        return direccion;
++    }
++
++    @Override
++    public void setDireccion(String direccion) {
++        this.direccion = direccion;
++    }
++
++    @Override
++    public String getTelefono() {
++        return telefono;
++    }
++
++    @Override
++    public void setTelefono(String telefono) {
++        this.telefono = telefono;
++    }
++
++    @Override
++    public String getNombre() {
++        return nombre;
++    }
++
++    @Override
++    public Lista getListaProductos() {
++        return listaProductos;
++    }
++
++    @Override
++    public void insertarProducto(Producto unProducto) {
++        Nodo<Producto> nodito = listaProductos.buscar(unProducto.getProductCode());
++        if (nodito != null) {
++            Producto productoExistente = nodito.getDato();
++            productoExistente.setProductCant(productoExistente.getProductCant() + unProducto.getProductCant());
++        } else {
++            nodito = new Nodo<>(unProducto.getProductCode(), unProducto);
++            listaProductos.insertar(nodito);
++        }
++    }
++
++    @Override
++    public boolean eliminar(Comparable clave) {
++        return listaProductos.eliminar(clave);
++    }
++
++    @Override
++    public String imprimirProductos() {
++        return listaProductos.toString();
++    }
++
++    @Override
++    public String imprimirSeparador(String separador) {
++        return null;
++    }
++
++    @Override
++    public Boolean agregarStock(Comparable clave, Integer cantidad) {
++        Nodo<Producto> producto = listaProductos.buscar(clave);
++        if (producto != null) {
++            producto.getDato().setProductCant(cantidad);
++            return true;
++        }
++        return false;
++    }
++
++    @Override
++    public Integer restarStock(Comparable clave, Integer cantidad) {
++        Nodo<Producto> producto = listaProductos.buscar(clave);
++        if (producto != null) {
++            producto.getDato().setProductCant((producto.getDato().getProductCant() < cantidad) ? 0 : producto.getDato().getProductCant() - cantidad);
++            return 1;
++        }
++        return 0;
++    }
++
++    @Override
++    public Producto buscarPorCodigo(Comparable clave) {
++        return (Producto) listaProductos.buscar(clave).getDato();
++    }
++
++    @Override
++    public void listarOrdenadoPorNombre() {
++
++    }
++
++    @Override
++    public Producto buscarPorDescripcion(String descripcion) {
++        return null;
++    }
++
++    @Override
++    public int cantidadProductos() {
++        return 1;
++    }
++}
+Index: src/PD4/Lista.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD4/Lista.java b/src/PD4/Lista.java
+new file mode 100644
+--- /dev/null	(date 1681816714999)
++++ b/src/PD4/Lista.java	(date 1681816714999)
+@@ -0,0 +1,95 @@
++package PD4;
++
++public class Lista<T> implements ILista<T> {
++    private Nodo<T> primero;
++    private int cantidadElementos;
++
++    public Lista() {
++        this.primero = null;
++        this.cantidadElementos = 0;
++    }
++
++    @Override
++    public void insertar(Nodo<T> nodo) {
++        if (this.primero == null) {
++            this.primero = nodo;
++        } else {
++            Nodo<T> actual = this.primero;
++            while (actual.getSiguiente() != null) {
++                actual = actual.getSiguiente();
++            }
++            actual.setSiguiente(nodo);
++        }
++        this.cantidadElementos++;
++    }
++
++    @Override
++    public void insertar(Comparable etiqueta, T dato) {
++        Nodo<T> nodo = new Nodo<>(etiqueta, dato);
++        this.insertar(nodo);
++    }
++
++    @Override
++    public Nodo<T> buscar(Comparable clave) {
++        Nodo<T> actual = this.primero;
++        while (actual != null) {
++            if (actual.getEtiqueta().equals(clave)) {
++                return actual;
++            }
++            actual = actual.getSiguiente();
++        }
++        return null;
++    }
++
++    @Override
++    public boolean eliminar(Comparable clave) {
++        Nodo<T> actual = this.primero;
++        Nodo<T> anterior = null;
++        while (actual != null) {
++            if (actual.getEtiqueta().equals(clave)) {
++                if (anterior == null) {
++                    this.primero = actual.getSiguiente();
++                } else {
++                    anterior.setSiguiente(actual.getSiguiente());
++                }
++                this.cantidadElementos--;
++                return true;
++            }
++            anterior = actual;
++            actual = actual.getSiguiente();
++        }
++        return false;
++    }
++
++    @Override
++    public String imprimir() {
++        return this.imprimir(" ");
++    }
++
++    @Override
++    public String imprimir(String separador) {
++        StringBuilder sb = new StringBuilder();
++        Nodo<T> actual = this.primero;
++        while (actual != null) {
++            sb.append(actual.getDato().toString());
++            sb.append(separador);
++            actual = actual.getSiguiente();
++        }
++        return sb.toString();
++    }
++
++    @Override
++    public int cantElementos() {
++        return this.cantidadElementos;
++    }
++
++    @Override
++    public boolean esVacia() {
++        return (this.primero == null);
++    }
++
++    @Override
++    public void setPrimero(Nodo<T> unNodo) {
++        this.primero = unNodo;
++    }
++}
+\ No newline at end of file
+Index: src/PD4/ILista.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD4/ILista.java b/src/PD4/ILista.java
+new file mode 100644
+--- /dev/null	(date 1681816714999)
++++ b/src/PD4/ILista.java	(date 1681816714999)
+@@ -0,0 +1,65 @@
++package PD4;
++public interface ILista<T> {
++
++    /**
++     * Metodo encargado de agregar un nodo al final de la lista.
++     *
++     * @param nodo - Nodo a agregar
++     */
++    public void insertar(Nodo<T> nodo);
++
++    public void insertar (Comparable etiqueta, T dato );
++    
++    
++    /**
++     * 
++     * 
++     * Metodo encargado de buscar un nodo cuya clave es la indicada.
++     *
++     * @param clave - Clave del nodo a buscar.
++     * @return El nodo encontrado. En caso de no encontrarlo, retornar null.
++     */
++    public Nodo<T> buscar(Comparable clave);
++
++    /**
++     * Metodo encargado de eliminar un nodo cuya clave es la indicada.
++     *
++     * @param clave Clave del nodo a eliminar.
++     * @return True en caso de que la eliminaci�n haya sido efectuada con �xito.
++     */
++    public boolean eliminar(Comparable clave);
++
++    /**
++     * Metodo encargado de imprimir en consola las claves de los nodos
++     * contenidos en la lista.
++     * @return 
++     */
++    public String imprimir();
++
++    /**
++     * Retorna un String con las claves separadas por el separador pasado por
++     * par�metro.
++     *
++     * @param separador Separa las claves
++     * @return
++     */
++    public String imprimir(String separador);
++
++    /**
++     * Retorna la cantidad de elementos de la lista. En caso de que la lista
++     * este vac�a, retornar 0.
++     *
++     * @return Cantidad de elementos de la lista.
++     */
++    public int cantElementos();
++
++    /**
++     * Indica si la lista contiene o no elementos.
++     *
++     * @return Si tiene elementos o no.
++     */
++    public boolean esVacia();
++    
++    public void setPrimero( Nodo<T> unNodo);    
++
++}
+Index: src/PD4/ManejadorArchivosGenerico.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD4/ManejadorArchivosGenerico.java b/src/PD4/ManejadorArchivosGenerico.java
+new file mode 100644
+--- /dev/null	(date 1681816714999)
++++ b/src/PD4/ManejadorArchivosGenerico.java	(date 1681816714999)
+@@ -0,0 +1,65 @@
++package PD4;
++
++
++import java.io.BufferedReader;
++import java.io.BufferedWriter;
++import java.io.FileNotFoundException;
++import java.io.FileReader;
++import java.io.FileWriter;
++import java.io.IOException;
++import java.util.ArrayList;
++
++public class ManejadorArchivosGenerico {
++	/**
++	 * @param nombreCompletoArchivo
++	 * @param listaLineasArchivo
++	 *            lista con las lineas del archivo
++	 * @throws IOException
++	 */
++	public static void escribirArchivo(String nombreCompletoArchivo,
++			String[] listaLineasArchivo) {
++		FileWriter fw;
++		try {
++			fw = new FileWriter(nombreCompletoArchivo, true);
++			BufferedWriter bw = new BufferedWriter(fw);
++			for (int i = 0; i < listaLineasArchivo.length; i++) {
++				String lineaActual = listaLineasArchivo[i];
++				bw.write(lineaActual);
++				bw.newLine();
++			}
++			bw.close();
++			fw.close();
++		} catch (IOException e) {
++			System.out.println("Error al escribir el archivo "
++					+ nombreCompletoArchivo);
++			e.printStackTrace();
++		}
++	}
++
++	public static String[] leerArchivo(String nombreCompletoArchivo) {
++		FileReader fr;
++		ArrayList<String> listaLineasArchivo = new ArrayList<String>();
++		try {
++			fr = new FileReader(nombreCompletoArchivo);
++			BufferedReader br = new BufferedReader(fr);
++			String lineaActual = br.readLine();
++			while (lineaActual != null) {
++				listaLineasArchivo.add(lineaActual);
++				lineaActual = br.readLine();
++			}
++			br.close();
++            fr.close();
++		} catch (FileNotFoundException e) {
++			System.out.println("Error al leer el archivo "
++					+ nombreCompletoArchivo);
++			e.printStackTrace();
++		} catch (IOException e) {
++			System.out.println("Error al leer el archivo "
++					+ nombreCompletoArchivo);
++			e.printStackTrace();
++		}
++		System.out.println("Archivo leido satisfactoriamente");
++
++		return listaLineasArchivo.toArray(new String[0]);
++	}
++}
+Index: src/PD4/INodo.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD4/INodo.java b/src/PD4/INodo.java
+new file mode 100644
+--- /dev/null	(date 1681816714999)
++++ b/src/PD4/INodo.java	(date 1681816714999)
+@@ -0,0 +1,59 @@
++package PD4;
++public interface INodo<T> {
++
++    
++    /**
++     * devuelve el dato del nodo
++     * @return 
++     */
++    public T getDato();
++    
++    /**
++     * devuelve el siguiente del nodo
++     * @return 
++     */
++    public Nodo<T> getSiguiente();
++    
++    
++    /**
++     * "engancha" otro nodo a continuacion
++     * 
++     */
++    public void setSiguiente(Nodo<T> nodo);
++    
++    /**
++     * Imprime los datos del nodo
++     */
++    
++    
++    
++    public void imprimir();
++
++    /**
++     * Imprime la etiqueta del nodo
++     */
++    
++    public void imprimirEtiqueta();
++
++    
++    /**
++     * Retorna la etiqueta del nodo
++     *
++     * @return etiqueta del nodo
++     */
++    public Comparable getEtiqueta();
++//	/**
++//	 *
++//	 * @param unNodo
++//	 * @return devueve -1 si this tiene una clave menor, 0 si son iguales, 1 si es mayor
++//	 */
++//	public int compareTo(INodo<E> unNodo);
++
++    /**
++     *
++     * @param etiqueta
++     * @return devueve -1 si this tiene una etiqueta menor, 0 si son iguales, 1
++     * si es mayor
++     */
++    public int compareTo(Comparable etiqueta);
++}
+Index: src/PD4/ArchivosPrueba/altasPrueba.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD4/ArchivosPrueba/altasPrueba.txt b/src/PD4/ArchivosPrueba/altasPrueba.txt
+new file mode 100644
+--- /dev/null	(date 1681816714999)
++++ b/src/PD4/ArchivosPrueba/altasPrueba.txt	(date 1681816714999)
+@@ -0,0 +1,7 @@
++1000073,GALLETAS CEREALITAS CLASICAS,103,307
++1000087,GELATINA DURAZNO ROYAL 8 PORCIONES ,56,431
++1000088,GELATINA FRUTILLA ROYAL 8 PORCIONES,150,2
++1000096,HELADO DULCE DE LECHE  RECREO ,226,280
++1000097,HELADO FRUTILLA RECREO,73,569
++1000073,GALLETAS CEREALITAS CLASICAS,103,25
++1000088,GELATINA FRUTILLA ROYAL 8 PORCIONES,150,13
+\ No newline at end of file
+Index: src/PD4/Producto.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD4/Producto.java b/src/PD4/Producto.java
+new file mode 100644
+--- /dev/null	(date 1681816715005)
++++ b/src/PD4/Producto.java	(date 1681816715005)
+@@ -0,0 +1,56 @@
++package PD4;
++
++public class Producto {
++    private int ProductCode;
++    private String ProductDesc;
++    private int ProductPrice;
++    private int ProductCant;
++
++    public int getProductCode() {
++        return ProductCode;
++    }
++
++    public void setProductCode(int productCode) {
++        ProductCode = productCode;
++    }
++
++    public String getProductDesc() {
++        return ProductDesc;
++    }
++
++    public void setProductDesc(String productDesc) {
++        ProductDesc = productDesc;
++    }
++
++    public int getProductPrice() {
++        return ProductPrice;
++    }
++
++    public void setProductPrice(int productPrice) {
++        ProductPrice = productPrice;
++    }
++
++    public int getProductCant() {
++        return ProductCant;
++    }
++
++    public void setProductCant(int productCant) {
++        ProductCant = productCant;
++    }
++
++    public Producto(int productCode, String productDesc, int productPrice, int productCant) {
++        ProductCode = productCode;
++        ProductDesc = productDesc;
++        ProductPrice = productPrice;
++        ProductCant = productCant;
++    }
++
++    @Override
++    public String toString() {
++        StringBuilder sb = new StringBuilder();
++        sb.append(this.ProductDesc + ", ");
++        sb.append(this.ProductPrice + ", ");
++        sb.append(this.ProductCant);
++        return sb.toString();
++    }
++}
+Index: src/PD4/ArchivosAlmacen/ventas.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD4/ArchivosAlmacen/ventas.txt b/src/PD4/ArchivosAlmacen/ventas.txt
+new file mode 100644
+--- /dev/null	(date 1681816714989)
++++ b/src/PD4/ArchivosAlmacen/ventas.txt	(date 1681816714989)
+@@ -0,0 +1,11 @@
++1000031,300
++1000032,120
++1000037,900
++1000041,23
++1000066,45
++1000085,12
++1000088,89
++1000091,15
++1000092,88
++1000175,8
++1000177,145
+\ No newline at end of file
+Index: src/PD4/ArchivosAlmacen/elim.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD4/ArchivosAlmacen/elim.txt b/src/PD4/ArchivosAlmacen/elim.txt
+new file mode 100644
+--- /dev/null	(date 1681816714989)
++++ b/src/PD4/ArchivosAlmacen/elim.txt	(date 1681816714989)
+@@ -0,0 +1,8 @@
++1000005
++1000023
++1000045
++1000084
++1010084
++1000129
++1000176
++1000198
+\ No newline at end of file
+Index: src/PD4/ArchivosPrueba/ventasPrueba.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD4/ArchivosPrueba/ventasPrueba.txt b/src/PD4/ArchivosPrueba/ventasPrueba.txt
+new file mode 100644
+--- /dev/null	(date 1681816714999)
++++ b/src/PD4/ArchivosPrueba/ventasPrueba.txt	(date 1681816714999)
+@@ -0,0 +1,4 @@
++1000073,550
++1000087,400
++1000088,GELATINA FRUTILLA ROYAL 8 PORCIONES,150,15
++1000031,300
+\ No newline at end of file
+Index: src/PD4/ArchivosPrueba/elimPrueba.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD4/ArchivosPrueba/elimPrueba.txt b/src/PD4/ArchivosPrueba/elimPrueba.txt
+new file mode 100644
+--- /dev/null	(date 1681816714999)
++++ b/src/PD4/ArchivosPrueba/elimPrueba.txt	(date 1681816714999)
+@@ -0,0 +1,3 @@
++1000073
++1000087
++2000036
+\ No newline at end of file
+Index: .idea/.gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/.gitignore b/.idea/.gitignore
+new file mode 100644
+--- /dev/null	(date 1681816714973)
++++ b/.idea/.gitignore	(date 1681816714973)
+@@ -0,0 +1,8 @@
++# Default ignored files
++/shelf/
++/workspace.xml
++# Editor-based HTTP Client requests
++/httpRequests/
++# Datasource local storage ignored files
++/dataSources/
++/dataSources.local.xml
+Index: .idea/modules.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules.xml b/.idea/modules.xml
+new file mode 100644
+--- /dev/null	(date 1681816714973)
++++ b/.idea/modules.xml	(date 1681816714973)
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectModuleManager">
++    <modules>
++      <module fileurl="file://$PROJECT_DIR$/UT3_EJERCICIOS_DOMICILIARIOS.iml" filepath="$PROJECT_DIR$/UT3_EJERCICIOS_DOMICILIARIOS.iml" />
++    </modules>
++  </component>
++</project>
+\ No newline at end of file
+Index: src/PD4/ArchivosAlmacen/altas.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD4/ArchivosAlmacen/altas.txt b/src/PD4/ArchivosAlmacen/altas.txt
+new file mode 100644
+--- /dev/null	(date 1681816714989)
++++ b/src/PD4/ArchivosAlmacen/altas.txt	(date 1681816714989)
+@@ -0,0 +1,206 @@
++1000001,ADES� DURAZNO�,140,75
++1000002,ADES� FRUTAS TROPICALES�,53,832
++1000003,ADES� MANZANA�,144,912
++1000004,ADES� NARANJA�,176,595
++1000005,ADES� PERA�,176,82
++1000006,AGUA MINERAL MATUTINA C/GAS�,123,85
++1000007,AGUA MINERAL MATUTINA S/GAS�,145,498
++1000008,REFRESCO TANG DURAZNO�,104,237
++1000009,REFRESCO TANG LIMONADA�,65,134
++1000010,REFRESCO TANG MANZANA�,232,939
++1000011,REFRESCO TANG MULTIFRUTAS�,174,340
++1000012,REFRESCO TANG NARANJA�,88,39
++1000013,REFRESCO TANG NARANJA BANANA FRUTILLA�,127,491
++1000014,REFRESCO TANG NARANJA DURAZNO�,201,439
++1000015,REFRESCO TANG NARANJA FRUTILLA KIWI�,160,156
++1000016,REFRESCO TANG NARANJA MANGO�,59,372
++1000017,REFRESCO TANG PERA�,58,81
++1000018,REFRESCO TANG POMELO ROSADO�,77,226
++1000019,VINO BLANCO DE MESA SANTA TERESA�,177,9
++1000020,VINO BLANCO DULCE DE MESA SANTA TERESA,225,495
++1000021,VINO ROSADO DE MESA SANTA TERESA�,214,335
++1000022,VINO ROSADO DULCE DE MESA SANTA TERESA,187,807
++1000023,VINO TINTO DE MESA SANTA TERESA�,82,778
++1000024,�ACEITE DE SOJA RIO DE LA PLATA,174,172
++1000025,ACEITE GIRASOL����,192,508
++1000026,ARROZ PARBOILED BLUE PATNA�,95,709
++1000027,ARROZ PARBOILED SAMAN,57,977
++1000028,ARROZ PATNA BLUE PATNA,115,410
++1000029,ARROZ PATNA GREEN CHEF,220,497
++1000030,ARROZ PATNA SAMAN BLANCO�,185,304
++1000031,ARVEJAS REHIDRATADAS ODERICH,120,14
++1000032,ATUN� DESMENUZADO EN ACEITE� EL EMIGRANTE,131,504
++1000033,ATUN LOMITOS EN ACEITE EL EMIGRANTE,101,895
++1000034,CALDO CARNE KNORR TRIPLE�,173,227
++1000035,CALDO GALLINA KNORR TRIPLE�,122,310
++1000036,CALDO VERDURAS� KNORR TRIPLE�,230,517
++1000037,CHOCLO EN GRANO ODERICH�,64,443
++1000038,FIDEO AL HUEVO LAS ACACIAS CODITOS����,165,742
++1000039,FIDEO AL HUEVO LAS ACACIAS DEDALES�,181,215
++1000040,FIDEO AL HUEVO LAS ACACIAS MOSTACHOL,156,469
++1000041,FIDEO AL HUEVO LAS ACACIAS TIRABUZON���,118,700
++1000042,HARINA FARINEL� 0000,228,262
++1000043,HARINA FORTIN 0,123,439
++1000044,MAYONESA HELLMANN�S DOY PACK���,232,671
++1000045,PAN RALLADO� LOS SORCHANTES,34,714
++1000046,PAN RALLADO SABORIZADO� LOS SORCHANTES,73,962
++1000047,PULPA DE TOMATE CONAPROLE�,51,347
++1000048,PURE DE PAPAS RIO DE LA PLATA�,203,784
++1000049,SALSA KETCHUP HELLMANN�S DOY PACK -���,91,357
++1000050,VINAGRE DE ALCOHOL JG. GAMBERONI,135,146
++1000051,VINAGRE DE ALCOHOL JG. GAMBERONI,196,113
++1000052,�GALLETITAS CEREALITAS COPOS MULTIFIBRAS,125,269
++1000053,�MERMELADA CIRUELA DULCIORA,201,17
++1000054,�MERMELADA DAMASCO DULCIORA,179,724
++1000055,ALIMENTO ACHOCOLATADO VASCOLET����,203,584
++1000056,AVENA LAMINADA PURITAS FINA�,73,731
++1000057,CAFE� NESCAFE ORIG.EXTRA FUERTE,84,171
++1000058,CAFE� NESCAFE TRADICAO FUERTE�,215,165
++1000059,CAF� BRACAFE RECARGA,101,93
++1000060,CAF� MOLIDO EL CHANA,209,302
++1000061,CEBADA AMANECER NESTLE�,100,429
++1000062,DULCE DE LECHE MANJAR��,183,895
++1000063,DULCE DE MEMBRILLO LOS NIETITOS�,69,914
++1000064,EDULCORANTE LIQUIDO CHUKER�,123,20
++1000065,FLAN� ROYAL 8 PORCIONES,125,547
++1000066,FLAN DULCE DE LECHE� ROYAL 8 PORCIONES,195,188
++1000067,GALLETA AL AGUA DESAYUNO FAMOSA�������,67,771
++1000068,GALLETA ARROZ SAMAN CLASICA�,69,175
++1000069,GALLETA ARROZ SAMAN DULCE�,208,811
++1000070,GALLETA ARROZ SAMAN SIN SAL,110,877
++1000071,GALLETA CRIC CRAC� EL TRIGAL���,41,266
++1000072,GALLETA DE ARROZ SAMAN MINI,119,18
++1000073,GALLETAS CEREALITAS CLASICAS,103,307
++1000074,GALLETAS CEREALITAS SEMILLAS LINO,58,205
++1000075,GALLETAS FINITAS LA CELESTINA�,136,332
++1000076,GALLETAS FINITAS MULTICEREAL LA CELESTINA�,204,335
++1000077,GALLETAS FINITAS SIN SAL LA CELESTINA,75,876
++1000078,GALLETAS SALVADO CEREALITAS�,68,507
++1000079,GALLETITA MARIA RIKA EL TRIGAL�,86,939
++1000080,GALLETITAS BA�ADAS CHOCOLATE BRIDGE���,99,568
++1000081,GALLETITAS RELLENAS CHANTILLY LULU FAMOSA�,97,876
++1000082,GALLETITAS RELLENAS CHOCOLATE LULU FAMOSA�,91,604
++1000083,GALLETITAS RELLENAS DULCE DE LECHE CHOCOLATE LULU�,75,509
++1000084,GALLETITAS RELLENAS FRUTILLA LULU FAMOSA,53,355
++1000085,GALLETITAS SURTIDAS EL TRIGAL�,37,760
++1000086,GELATINA CEREZA ROYAL 8 PORCIONES�,170,753
++1000087,GELATINA DURAZNO ROYAL 8 PORCIONES�,56,431
++1000088,GELATINA FRUTILLA ROYAL 8 PORCIONES,150,204
++1000089,GELATINA MANZANA VERDE ROYAL 8 PORCIONES,163,760
++1000090,GELATINA NARANJA ROYAL 8 PORCIONES����,169,38
++1000091,GRISSINES FINITOS AL AGUA EL MAESTRO CUBANO,52,851
++1000092,GRISSINES FINITOS INTEGRAL MAESTRO CUBANO,114,936
++1000093,GRISSINES FINITOS QUESO EL MAESTRO CUBANO,146,814
++1000094,HELADO CHOCOLATE RECREO�,190,90
++1000095,HELADO CREMA RECREO�,57,436
++1000096,HELADO DULCE DE LECHE� RECREO�,226,280
++1000097,HELADO FRUTILLA RECREO,73,569
++1000098,HELADO RECREO DURAZNO�,153,211
++1000099,MERMELADA DURAZNO L.NIETITOS�,212,611
++1000100,MERMELADA FRUTILLA L.NIETITOS�,137,914
++1000101,PAN AMERICANO CHICO LOS SORCHANTES�,63,119
++1000102,PAN INTEGRAL LOS SORCHANTES�,202,654
++1000103,POSTRE CARAMELO ROYAL 8 PORCIONES���,141,79
++1000104,POSTRE CHOCOLATE ROYAL 8 PORCIONES,124,885
++1000105,POSTRE VAINILLA ROYAL 8 PORCIONES�,70,311
++1000106,TE� LIPTON 20 SOBRES,217,438
++1000107,TE LIPTON� 10 SOBRES,213,661
++1000108,WAFFLE RELLENO CHANTILLY LULU FAMOSA,59,244
++1000109,WAFFLE RELLENO CHOCOLATE LULU FAMOSA�,55,759
++1000110,WAFFLE RELLENO CHOCOLATE Y FRUTILLA LULU� FAMOSA,224,885
++1000111,WAFFLE RELLENO DE FRUTILLA LULU FAMOSA,204,180
++1000112,YERBA� MATE SARA�����,62,697
++1000113,YERBA� MATE SUAVE SARA�,36,334
++1000114,HAMBURGUESAS� FRIBURGUER X 3 UNIDADES��,156,103
++1000115,HUEVOS BLANCOS ESPECIAL PRODHIN X 6 UN.,155,408
++1000116,MANTECA� CONAPROLE�,210,81
++1000117,MANTECA� CONAPROLE�,33,481
++1000118,MANTECA SALADA CONAPROLE�,126,285
++1000119,MANTECA SALADA CONAPROLE�,175,811
++1000120,MARGARINA VEGETAL SOYA�,116,894
++1000121,TAPA EMPANADA CASERA P/HORNO X 12 AVANTI,55,347
++1000122,TAPA EMPANADA P/FREIR��� X 12 AVANTI,116,820
++1000123,TAPA EMPANADA P/FREIR X 12 LA ESPECIALISTA����,111,736
++1000124,TAPA EMPANADA P/HORNO��� X 12 AVANTI,159,110
++1000125,TAPA EMPANADA P/HORNO X 12 LA ESPECIALISTA����,228,764
++1000126,YOGUR BIOTOP ANANA,214,476
++1000127,YOGUR BIOTOP BANANA FRUTILLAS,122,673
++1000128,YOGUR BIOTOP DURAZNO,37,901
++1000129,YOGUR BIOTOP FRUTILLA,180,46
++1000130,YOGUR BIOTOP MANZANA,157,957
++1000131,YOGUR BIOTOP PERA,212,615
++1000132,YOGUR BIOTOP VAINILLA,158,426
++1000133,YOGUR DIETETICO BIOTOP DURAZNO,133,396
++1000134,YOGUR DIETETICO BIOTOP FRUTILLA,115,206
++1000135,BOLSA P/RESIDUOS HERRADURA� 50 X 56�,107,885
++1000136,DETERGENTE CRISTALINO NEVEX CLASICO�,111,457
++1000137,DETERGENTE CRISTALINO NEVEX LIMON,240,957
++1000138,DETERGENTE CRISTALINO NEVEX PODER NATURALEZA,62,210
++1000139,ESPONJA LIMPIA ALUMINIO JASPE X 6 ROLLITOS,114,116
++1000140,"FIBRA ESPONJA JASPE 11X7X2,5",75,191
++1000141,GUANTES FUNSA BICOLOR 10,217,761
++1000142,GUANTES FUNSA BICOLOR 7 1/2,197,275
++1000143,GUANTES FUNSA BICOLOR 8,182,129
++1000144,GUANTES FUNSA BICOLOR 8 1/2,231,505
++1000145,GUANTES FUNSA BICOLOR 9,141,351
++1000146,JABON BARRA NEVEX C/TQ.VIVERE CLASICO�,138,217
++1000147,JABON EN BARRA NEVEX FRESH�,115,595
++1000148,JABON EN POLVO DRIVE� BRISA DE TARDE,49,249
++1000149,JABON EN POLVO DRIVE� CAMINANDO BOSQUE,107,570
++1000150,JABON EN POLVO DRIVE FRESCURA MAR,30,123
++1000151,LIMP.LIQ MR.MUSCULO GLADE MA�ANA DE CAMPO�,142,542
++1000152,LIMP.LIQ MR.MUSCULO GLADE MA�ANA DE CAMPO�,127,794
++1000153,LIMP.LIQ.MR.MUSCULO GLADE BEBE�,184,693
++1000154,LIMP.LIQ.MR.MUSCULO GLADE BRISA DE LAS CUMBRES�,50,937
++1000155,LIMP.LIQ.MR.MUSCULO GLADE FLORAL,226,71
++1000156,LIMP.LIQ.MR.MUSCULO GLADE FLORAL PERFECTION,156,834
++1000157,LIMP.LIQ.MR.MUSCULO GLADE HARMONY�,227,423
++1000158,LIMP.LIQ.MR.MUSCULO GLADE I LOVE YOU�,221,578
++1000159,LIMP.LIQ.MR.MUSCULO GLADE LAVANDA,40,697
++1000160,LIMP.LIQ.MR.MUSCULO GLADE LAVANDA,236,136
++1000161,LIMP.LIQ.MR.MUSCULO GLADE PINO�,118,166
++1000162,LIMP.LIQ.MR.MUSCULO GLADE PINO�,181,265
++1000163,SUAVIZANTE VIVERE DIA A D�A DOY PACK�,63,494
++1000164,ACONDICIONADOR SEDAL� RECONSTRUCCI�N�,33,292
++1000165,ACONDICIONADOR SEDAL LISOS�,150,145
++1000166,ACONDICIONADOR SEDAL RIZOS�,152,959
++1000167,ACONDICIONADOR SEDAL SOS CERAMIDAS�,228,42
++1000168,CEPILLO DENTAL COLGATE ZIG ZAG 2X1,235,303
++1000169,CREMA DENTAL COLGATE CALCIO,68,144
++1000170,DESODORANTE REXONA AEROSOL AP ADVENTURE�,195,214
++1000171,DESODORANTE REXONA AEROSOL AP SPORTFUN�,74,766
++1000172,DESODORANTE REXONA AEROSOL AP SUPERGIRO�,47,982
++1000173,DESODORANTE REXONA BAMBOO AEROSOL��,154,185
++1000174,DESODORANTE REXONA COTTON AEROSOL��,212,857
++1000175,DESODORANTE REXONA EXTRAFRESH AEROSOL��,151,785
++1000176,JABON LIFEBOUY� FRESH 3X125GR,49,830
++1000177,JABON LIFEBOUY� VITAPROTECT 3X125GR,228,785
++1000178,JABON LIFEBOUY CREAM 3X125GR,134,304
++1000179,JABON LIFEBOUY TOTAL 3X125GR,220,655
++1000180,PA�AL BABYSEC ULTRA CH.X 20 UN.�������������������,91,766
++1000181,PA�AL BABYSEC ULTRA CHICO X36 UN.�����������������,179,877
++1000182,PA�AL BABYSEC ULTRA GDE PQ.30 UDS��������,187,344
++1000183,PA�AL BABYSEC ULTRA GDE X16 UN.�������������������,32,652
++1000184,PA�AL BABYSEC ULTRA JUMBO PACK GDE 60 UDS������,135,301
++1000185,PA�AL BABYSEC ULTRA JUMBO PACK MED.72 UN,156,226
++1000186,PA�AL BABYSEC ULTRA JUMBO PACK XG 48 UDS�������,106,748
++1000187,PA�AL BABYSEC ULTRA JUMBO PACK XXG 48 UDS������,32,580
++1000188,PA�AL BABYSEC ULTRA MED.X18 UN.�������������������,63,634
++1000189,PA�AL BABYSEC ULTRA MED.X36�����������������������,54,927
++1000190,PA�AL BABYSEC ULTRA XG PQ.24 UDS���������,117,685
++1000191,PA�AL BABYSEC ULTRA XG X14 UN.��������������������,56,250
++1000192,PA�AL BABYSEC ULTRA XXG X24 UN�����������,149,551
++1000193,PAPEL HIGIENICO TEXTURADO�,186,349
++1000194,SHAMPOO SEDAL� RECONSTRUCCI�N�,108,461
++1000195,SHAMPOO SEDAL� SOS CERAMIDAS�,178,538
++1000196,SHAMPOO SEDAL LISOS�,211,752
++1000197,SHAMPOO SEDAL RIZOS�,203,944
++1000198,TOALLA FEMENINA KOTEX NORMAL C/ALAS�,142,828
++1000199,FRANKFURTERS SARUBBI SUELTOS�,120,103
++1000073,GALLETAS CEREALITAS CLASICAS,103,307
++1000087,GELATINA DURAZNO ROYAL 8 PORCIONES�,56,431
++1000088,GELATINA FRUTILLA ROYAL 8 PORCIONES,150,2
++1000096,HELADO DULCE DE LECHE� RECREO�,226,280
++1000097,HELADO FRUTILLA RECREO,73,569
++1000073,GALLETAS CEREALITAS CLASICAS,103,25
++1000088,GELATINA FRUTILLA ROYAL 8 PORCIONES,150,13
+Index: .idea/uiDesigner.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/uiDesigner.xml b/.idea/uiDesigner.xml
+new file mode 100644
+--- /dev/null	(date 1681816714973)
++++ b/.idea/uiDesigner.xml	(date 1681816714973)
+@@ -0,0 +1,124 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="Palette2">
++    <group name="Swing">
++      <item class="com.intellij.uiDesigner.HSpacer" tooltip-text="Horizontal Spacer" icon="/com/intellij/uiDesigner/icons/hspacer.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="1" hsize-policy="6" anchor="0" fill="1" />
++      </item>
++      <item class="com.intellij.uiDesigner.VSpacer" tooltip-text="Vertical Spacer" icon="/com/intellij/uiDesigner/icons/vspacer.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="6" hsize-policy="1" anchor="0" fill="2" />
++      </item>
++      <item class="javax.swing.JPanel" icon="/com/intellij/uiDesigner/icons/panel.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3" />
++      </item>
++      <item class="javax.swing.JScrollPane" icon="/com/intellij/uiDesigner/icons/scrollPane.svg" removable="false" auto-create-binding="false" can-attach-label="true">
++        <default-constraints vsize-policy="7" hsize-policy="7" anchor="0" fill="3" />
++      </item>
++      <item class="javax.swing.JButton" icon="/com/intellij/uiDesigner/icons/button.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="3" anchor="0" fill="1" />
++        <initial-values>
++          <property name="text" value="Button" />
++        </initial-values>
++      </item>
++      <item class="javax.swing.JRadioButton" icon="/com/intellij/uiDesigner/icons/radioButton.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="3" anchor="8" fill="0" />
++        <initial-values>
++          <property name="text" value="RadioButton" />
++        </initial-values>
++      </item>
++      <item class="javax.swing.JCheckBox" icon="/com/intellij/uiDesigner/icons/checkBox.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="3" anchor="8" fill="0" />
++        <initial-values>
++          <property name="text" value="CheckBox" />
++        </initial-values>
++      </item>
++      <item class="javax.swing.JLabel" icon="/com/intellij/uiDesigner/icons/label.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="0" anchor="8" fill="0" />
++        <initial-values>
++          <property name="text" value="Label" />
++        </initial-values>
++      </item>
++      <item class="javax.swing.JTextField" icon="/com/intellij/uiDesigner/icons/textField.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
++          <preferred-size width="150" height="-1" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JPasswordField" icon="/com/intellij/uiDesigner/icons/passwordField.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
++          <preferred-size width="150" height="-1" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JFormattedTextField" icon="/com/intellij/uiDesigner/icons/formattedTextField.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
++          <preferred-size width="150" height="-1" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JTextArea" icon="/com/intellij/uiDesigner/icons/textArea.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
++          <preferred-size width="150" height="50" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JTextPane" icon="/com/intellij/uiDesigner/icons/textPane.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
++          <preferred-size width="150" height="50" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JEditorPane" icon="/com/intellij/uiDesigner/icons/editorPane.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
++          <preferred-size width="150" height="50" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JComboBox" icon="/com/intellij/uiDesigner/icons/comboBox.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="0" hsize-policy="2" anchor="8" fill="1" />
++      </item>
++      <item class="javax.swing.JTable" icon="/com/intellij/uiDesigner/icons/table.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
++          <preferred-size width="150" height="50" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JList" icon="/com/intellij/uiDesigner/icons/list.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="6" hsize-policy="2" anchor="0" fill="3">
++          <preferred-size width="150" height="50" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JTree" icon="/com/intellij/uiDesigner/icons/tree.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
++          <preferred-size width="150" height="50" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JTabbedPane" icon="/com/intellij/uiDesigner/icons/tabbedPane.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3">
++          <preferred-size width="200" height="200" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JSplitPane" icon="/com/intellij/uiDesigner/icons/splitPane.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3">
++          <preferred-size width="200" height="200" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JSpinner" icon="/com/intellij/uiDesigner/icons/spinner.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1" />
++      </item>
++      <item class="javax.swing.JSlider" icon="/com/intellij/uiDesigner/icons/slider.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1" />
++      </item>
++      <item class="javax.swing.JSeparator" icon="/com/intellij/uiDesigner/icons/separator.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3" />
++      </item>
++      <item class="javax.swing.JProgressBar" icon="/com/intellij/uiDesigner/icons/progressbar.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="0" fill="1" />
++      </item>
++      <item class="javax.swing.JToolBar" icon="/com/intellij/uiDesigner/icons/toolbar.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="0" fill="1">
++          <preferred-size width="-1" height="20" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JToolBar$Separator" icon="/com/intellij/uiDesigner/icons/toolbarSeparator.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="0" anchor="0" fill="1" />
++      </item>
++      <item class="javax.swing.JScrollBar" icon="/com/intellij/uiDesigner/icons/scrollbar.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="6" hsize-policy="0" anchor="0" fill="2" />
++      </item>
++    </group>
++  </component>
++</project>
+\ No newline at end of file
+Index: ../UT1_EJERCICIOS_DOMICILIARIOS/.idea/.name
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../UT1_EJERCICIOS_DOMICILIARIOS/.idea/.name b/../UT1_EJERCICIOS_DOMICILIARIOS/.idea/.name
+new file mode 100644
+--- /dev/null	(date 1681816714973)
++++ b/../UT1_EJERCICIOS_DOMICILIARIOS/.idea/.name	(date 1681816714973)
+@@ -0,0 +1,1 @@
++UT1_EJERCICIOS_DOMICILIARIOS.iml
+\ No newline at end of file
+Index: .idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+new file mode 100644
+--- /dev/null	(date 1681816714973)
++++ b/.idea/vcs.xml	(date 1681816714973)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="$PROJECT_DIR$/.." vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file
+Index: ../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej1.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej1.java b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej1.java
+new file mode 100644
+--- /dev/null	(date 1681816714973)
++++ b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej1.java	(date 1681816714973)
+@@ -0,0 +1,21 @@
++package UT1_PD5;
++
++import java.util.Arrays;
++
++public class Ej1 {
++    public static void main(String[] args) {
++
++        System.out.println(Vocaloide("Hola"));
++    }
++
++    public static int Vocaloide(String str) {
++        int num = 0;
++        for (int i = 0; i < str.length(); i++) {
++            char ch = str.charAt(i);
++            if (Arrays.stream(Vocales.values()).anyMatch(v -> v.name().equals(Character.toString(ch).toUpperCase()))) {
++                num++;
++            }
++        }
++        return num;
++    }
++}
+Index: ../UT1_EJERCICIOS_DOMICILIARIOS/.idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../UT1_EJERCICIOS_DOMICILIARIOS/.idea/vcs.xml b/../UT1_EJERCICIOS_DOMICILIARIOS/.idea/vcs.xml
+new file mode 100644
+--- /dev/null	(date 1681816714973)
++++ b/../UT1_EJERCICIOS_DOMICILIARIOS/.idea/vcs.xml	(date 1681816714973)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="$PROJECT_DIR$/.." vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file
+Index: ../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD10/frases.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD10/frases.txt b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD10/frases.txt
+new file mode 100644
+--- /dev/null	(date 1681816714973)
++++ b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD10/frases.txt	(date 1681816714973)
+@@ -0,0 +1,8 @@
++Hola don Pepito a
++Hola don Jose a
++¿Pasó usted ya por casa? a
++Por su casa yo pase a
++¿Vio usted a mi abuela? a
++A su abuela yo la vi a
++Adios don Pepito a
++Adios Don José a
+\ No newline at end of file
+Index: ../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej4.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej4.java b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej4.java
+new file mode 100644
+--- /dev/null	(date 1681816714973)
++++ b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej4.java	(date 1681816714973)
+@@ -0,0 +1,32 @@
++package UT1_PD5;
++
++public class Ej4 {
++    public static void main(String[] args) {
++        //Aca pide 3 argumentos y el programa dice CLARAMENTE que son 2...
++        if (args.length == 2) {
++            //Esto de abajo no andaba...
++            float a = Float.parseFloat(args[0]);
++            float b = Float.parseFloat(args[1]);
++            System.out.println("a + b = " +
++                    (a + b));
++            System.out.println("a - b = " +
++                    (a - b));
++            System.out.println("a * b = " +
++                    (a * b));
++            System.out.println("a / b = " +
++                    (a / b));
++            System.out.println("a % b = " +
++                    (a % b));
++        } else {
++            System.out.println("This program " +
++                    "requires two command-line arguments.");
++        }
++        //13.4 y 66.1
++
++        //a + b = 79.5
++        //a - b = -52.699997
++        //a * b = 885.7399
++        //a / b = 0.20272315
++        //a % b = 13.4
++    }
++}
+Index: ../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej11.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej11.java b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej11.java
+new file mode 100644
+--- /dev/null	(date 1681816714973)
++++ b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej11.java	(date 1681816714973)
+@@ -0,0 +1,15 @@
++package UT1_PD5;
++
++public class Ej11 {
++    public static void main(String[] args) {
++        String original = "este es el curso de Programación 2";
++        StringBuilder result = new StringBuilder("hola");
++        int index = original.indexOf('a');
++        /*1*/ result.setCharAt(0, original.charAt(0)); //"eola"
++        /*2*/ result.setCharAt(1, original.charAt(original.length()-1)); //"e2la"
++        /*3*/ result.insert(1, original.charAt(4)); //"ee2la"
++        /*4*/ result.append(original.substring(1,4)); //"ee2la st"
++        /*5*/ result.insert(3, (original.substring(index, index+2) + " ")); //"eee2lao s t"
++        System.out.println(result);
++    }
++}
+Index: ../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej5.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej5.java b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej5.java
+new file mode 100644
+--- /dev/null	(date 1681816714973)
++++ b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej5.java	(date 1681816714973)
+@@ -0,0 +1,20 @@
++package UT1_PD5;
++
++public class Ej5 {
++    public static void main(String[] args) {
++        double d = 888.51;
++        String s = Double.toString(d);
++
++        int dot = s.indexOf('.');
++        System.out.println(dot + " digits " +
++                "before decimal point.");
++        System.out.println( (s.length() - dot - 1) +
++                " digits after decimal point.");
++    }
++
++    //3 digits before decimal point.
++    //2 digits after decimal point.
++
++    //Sacas el valor de donde esta el punto y lo escribis en consola,
++    //y despues calculas el total y el punto menos 1 asi determinas donde esta el punto y por consecuencia cuandos digitos despues de la coma
++}
+Index: ../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD7/Ej2.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD7/Ej2.java b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD7/Ej2.java
+new file mode 100644
+--- /dev/null	(date 1681816714973)
++++ b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD7/Ej2.java	(date 1681816714973)
+@@ -0,0 +1,47 @@
++package UT1_PD7;
++
++public class Ej2 {
++    public static void main(String[] args) {
++        String s1 = "Hola";
++        String s2 = "Hola";
++        if ( s1 == s2 ) {
++            System.out.println( "True" );
++        } else {
++            System.out.println( "False" );
++        }
++
++        main2();
++        Correccion();
++    }
++
++    public static void main2() {
++        String s1 = new String("Hola");
++        String s2 = "Hola";
++        if ( s1 == s2 ) {
++            System.out.println( "True" );
++        } else {
++            System.out.println( "False" );
++        }
++    }
++
++    public static void Correccion() {
++        String s1 = "Hola";
++        String s2 = "Hola";
++
++        if (s1.equals(s2)) {
++            System.out.println( "True" );
++        } else {
++            System.out.println( "False" );
++        }
++    }
++}
++
++//¿Qué sentencia se ejecuta como resultado del If en cada caso y por qué?
++//  Busca en internet referencias que te permitan explicar las respuestas a las preguntas anteriores. Asegúrate que las
++//  mismas sean autoritativas y cítalas adecuadamente en tu respuesta.
++
++//R:
++//  El problema es que el compilador al ver que s1 y s2 "Son iguales" les asigna el mismo valor de memoria, entonces el if devuelve true
++//  https://www.campusmvp.es/recursos/post/java-comparacion-de-cadenas-literales-clases-repositorio-de-cadenas.aspx
++
++//Propone una versión correcta del código del Ejercicio #1.
+\ No newline at end of file
+Index: ../UT1_EJERCICIOS_DOMICILIARIOS/src/TA/UtilMath.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../UT1_EJERCICIOS_DOMICILIARIOS/src/TA/UtilMath.java b/../UT1_EJERCICIOS_DOMICILIARIOS/src/TA/UtilMath.java
+new file mode 100644
+--- /dev/null	(date 1681816714973)
++++ b/../UT1_EJERCICIOS_DOMICILIARIOS/src/TA/UtilMath.java	(date 1681816714973)
+@@ -0,0 +1,53 @@
++package TA;
++public class UtilMath {
++    public static void main(String[] args) {
++        System.out.println(sumaParesImpares(10)); //25
++        System.out.println(sumaParesImpares(11)); //30
++        System.out.println(sumaParesImpares(15)); //64
++
++        System.out.println(factorial(6)); //720
++    }
++
++    public static int factorial(int num) {
++        int contador = 1;
++        for (int i = 1; i <= num; i++) {
++            contador *= i;
++        }
++        return contador;
++    }
++
++    public static int sumaParesImpares(int num) {
++        int sumaPares = 0;
++        int sumaImpares = 0;
++        int num2 = num;
++        while (num2>0) {
++            if (num2%2==0){
++                sumaPares+=num2;
++                num2--;
++            }
++            else {
++                sumaImpares+=num2;
++                num2--;
++            }
++        }
++        if (isPrime(num)){
++            return sumaPares;
++        }
++        else {
++            return sumaImpares;
++        }
++    }
++    public static boolean isPrime(long n) {
++        boolean prime = true;
++        for (long i = 3; i <= Math.sqrt(n); i += 2)
++            if (n % i == 0) {
++                prime = false;
++                break;
++            }
++        if (( n%2 !=0 && prime && n > 2) || n == 2) {
++            return true;
++        } else {
++            return false;
++        }
++    }
++}
+\ No newline at end of file
+Index: ../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD9/Ej2.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD9/Ej2.java b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD9/Ej2.java
+new file mode 100644
+--- /dev/null	(date 1681816714973)
++++ b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD9/Ej2.java	(date 1681816714973)
+@@ -0,0 +1,63 @@
++package UT1_PD9;
++
++public class Ej2 {
++    /**
++     Hacer un programa en Java que indique si un número dado es primo. Si lo es, el programa
++     deberá calcular la suma de los números pares desde 0 hasta el número dado, y en caso
++     contrario deberá calcular la suma de los números impares desde 0 hasta el número dado.
++     Utilizar solamente sentencias while o do-while.
++     Posible código para calcular si un número es primo:
++     */
++
++    public static boolean isPrime(long n) {
++        boolean prime = true;
++        for (long i = 3; i <= Math.sqrt(n); i += 2)
++            if (n % i == 0) {
++                prime = false;
++                break;
++            }
++        if (( n%2 !=0 && prime && n > 2) || n == 2) {
++            return true;
++        } else {
++            return false;
++        }
++    }
++
++    public static int whileIsPrime(long n) {
++        boolean prime = true;
++        long i = 3;
++        while(i <= Math.sqrt(n)){
++            i += 2;
++            if (n % i == 0) {
++                prime = false;
++                break;
++            }
++        }
++        if (( n%2 !=0 && prime && n > 2) || n == 2) {
++            int sumita = 0;
++            int j = 0;
++            while (j < n) {
++                j += 1;
++                if(j % 2 == 0){
++                    sumita += j;
++                }
++            }
++            return sumita;
++        } else {
++            int sumita = 0;
++            int j = 0;
++            while (j < n) {
++                j += 1;
++                if(j % 2 != 0){
++                    sumita += j;
++                }
++            }
++            return sumita;
++        }
++    }
++
++    public static void main(String[] args) {
++        System.out.println(whileIsPrime(31));
++        System.out.println(isPrime(31));
++    }
++}
+Index: ../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD9/Ej1.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD9/Ej1.java b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD9/Ej1.java
+new file mode 100644
+--- /dev/null	(date 1681816714973)
++++ b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD9/Ej1.java	(date 1681816714973)
+@@ -0,0 +1,17 @@
++package UT1_PD9;
++
++public class Ej1 {
++    public static int factorial(int num){
++        if(num < 0){
++            return -1;
++        }else if(num == 0){
++            return 1;
++        }
++
++        int resultado = 1;
++        for (int i = 1; i <= num; i++) {
++            resultado *= i;
++        }
++        return resultado;
++    }
++}
+Index: ../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD8/Marcapasos.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD8/Marcapasos.java b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD8/Marcapasos.java
+new file mode 100644
+--- /dev/null	(date 1681816714973)
++++ b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD8/Marcapasos.java	(date 1681816714973)
+@@ -0,0 +1,15 @@
++package UT1_PD8;
++
++public class Marcapasos {
++    short presionSanguinea; //2 bytes
++    short frecuenciaCartiaca; //2 bytes
++    short nivelAzucar; //2 bytes
++    long maximaFuera; // 8 bytes
++    float minimoTiempo; // 4 bytes
++    double bateriaRestante; //8 bytes
++    char[] codigoFabricante = new char[8];
++
++
++    //Ocupa 42bytes + 12bytes del objeto + 2 bytes para que sea multiplo de 8.
++
++}
+\ No newline at end of file
+Index: ../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD10/Ej1.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD10/Ej1.java b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD10/Ej1.java
+new file mode 100644
+--- /dev/null	(date 1681816714973)
++++ b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD10/Ej1.java	(date 1681816714973)
+@@ -0,0 +1,61 @@
++package UT1_PD10;
++
++import java.io.BufferedReader;
++import java.io.FileReader;
++import java.io.IOException;
++import java.io.RandomAccessFile;
++import java.util.*;
++
++public class Ej1 {
++
++    public static void main(String[] args) throws IOException {
++        String[] Ar1 ={"Hola", "mundo", "de", "los", "algoritmos"};
++        String[] Ar2 ={"Hola", "mundo", "de", "la", "informática"};
++
++        System.out.println(Arrays.toString(palabrasComunes(Ar1, Ar2)));
++
++        System.out.println(Arrays.toString(palabrasComunesEnLineas("src/UT1_PD10/frases.txt")));
++    }
++
++    public static String[] palabrasComunes(String[] palabras1, String[] palabras2){
++        ArrayList<String> palabrasComunes = new ArrayList<String>();
++        for (String palabra : palabras1) {
++            if (Arrays.asList(palabras2).contains(palabra) && !palabrasComunes.contains(palabra)) {
++                palabrasComunes.add(palabra);
++            }
++        }
++        return palabrasComunes.toArray(new String[0]);
++    }
++
++    // Creo un ArrayList para almacenar las palabras comunes
++    // Recorro a través de las palabras en palabras1
++    // Si la palabra también está en la matriz palabras2 y aún no se ha agregado a palabrasComunes, la agrego
++    // Convierto el ArrayList en un vector y la devulvo
++
++
++    public static String[] palabrasComunesEnLineas(String archivo) throws IOException {
++        RandomAccessFile raf = new RandomAccessFile(archivo, "r");
++        int tamañoArchivo = (int) raf.length();
++        int primerIndice = (int) (Math.random() * tamañoArchivo);
++        raf.seek(primerIndice);
++        raf.readLine();
++        String linea1 = raf.readLine();
++        String linea2 = raf.readLine();
++        raf.close();
++
++        String[] palabras1 = linea1.split("\\s+");
++        String[] palabras2 = linea2.split("\\s+");
++
++        Set<String> palabrasSet = new HashSet<>(Arrays.asList(palabras1));
++
++        List<String> palabrasComunesList = new ArrayList<>();
++        for (String palabra : palabras2) {
++            if (palabrasSet.contains(palabra)) {
++                palabrasComunesList.add(palabra);
++            }
++        }
++        String[] palabrasComunes = new String[palabrasComunesList.size()];
++        palabrasComunes = palabrasComunesList.toArray(palabrasComunes);
++        return palabrasComunes;
++    }
++}
+Index: ../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej6.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej6.java b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej6.java
+new file mode 100644
+--- /dev/null	(date 1681816714973)
++++ b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej6.java	(date 1681816714973)
+@@ -0,0 +1,51 @@
++package UT1_PD5;
++
++import java.util.Arrays;
++
++public class Ej6 {
++    /**
++     * ## Metodos
++     *
++     * - substring : Devuelve una subcadena de la cadena original, desde el índice especificado hasta el final de la cadena o hasta un índice determinado
++     * - split : Divide una cadena en subcadenas utilizando el separador especificado y devuelve un array de cadenas
++     * - subSequence : Devuelve una subsecuencia de la cadena original, desde el índice inicial hasta el índice final especificados
++     * - trim : Devuelve una cadena que representa la cadena original sin los espacios en blanco iniciales y finales
++     * - toLowerCase : Devuelve una cadena que representa la cadena original con todos los caracteres en minúscula
++     * - toUpperCase : Devuelve una cadena que representa la cadena original con todos los caracteres en mayúscula
++     * - indexOf : Devuelve el índice de la primera ocurrencia del carácter o subcadena especificados en la cadena original
++     * - lastIndexOf : Devuelve el índice de la última ocurrencia del carácter o subcadena especificados en la cadena original
++     * - contains : Devuelve un valor booleano que indica si la cadena original contiene la subcadena especificada
++     * - replace : Devuelve una cadena que representa la cadena original con todas las ocurrencias de un carácter o subcadena especificados reemplazados por otro carácter o subcadena especificados
++     * - replaceAll : Devuelve una cadena que representa la cadena original con todas las ocurrencias de una expresión regular especificada reemplazadas por otra cadena especificada
++     * - replaceFirst : Devuelve una cadena que representa la cadena original con la primera ocurrencia de una expresión regular especificada reemplazada por otra cadena especificada*/
++
++    public static void main(String[] args) {
++        String cadena = " Hola Mundo ";
++        String subcadena = cadena.substring(5);
++        String[] subcadenas = cadena.split(" ");
++        CharSequence subsecuencia = cadena.subSequence(5, 10);
++        String cadenaSinEspacios = cadena.trim();
++        String cadenaEnMinusculas = cadena.toLowerCase();
++        String cadenaEnMayusculas = cadena.toUpperCase();
++        int indice = cadena.indexOf("M");
++        int ultimoIndice = cadena.lastIndexOf("o");
++        boolean contiene = cadena.contains("Mundo");
++        String reemplazo1 = cadena.replace("o", "0");
++        String reemplazo2 = cadena.replaceAll("\\s", "");
++        String reemplazo3 = cadena.replaceFirst("o", "0");
++
++        System.out.println("Subcadena: " + subcadena);
++        System.out.println("Subcadenas: " + Arrays.toString(subcadenas));
++        System.out.println("Subsecuencia: " + subsecuencia);
++        System.out.println("Cadena sin espacios: " + cadenaSinEspacios);
++        System.out.println("Cadena en minúsculas: " + cadenaEnMinusculas);
++        System.out.println("Cadena en mayúsculas: " + cadenaEnMayusculas);
++        System.out.println("Índice: " + indice);
++        System.out.println("Último índice: " + ultimoIndice);
++        System.out.println("Contiene: " + contiene);
++        System.out.println("Reemplazo 1: " + reemplazo1);
++        System.out.println("Reemplazo 2: " + reemplazo2);
++        System.out.println("Reemplazo 3: " + reemplazo3);
++    }
++
++}
+Index: ../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej8_9_10.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej8_9_10.java b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej8_9_10.java
+new file mode 100644
+--- /dev/null	(date 1681816714973)
++++ b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej8_9_10.java	(date 1681816714973)
+@@ -0,0 +1,26 @@
++package UT1_PD5;
++
++public class Ej8_9_10 {
++    //Ej 8:
++        // 16
++
++    //Ej9:
++        //Considere el siguiente string:
++        //String hannah = "Did Hannah see bees? Hannah did.";
++        //a) ¿qué valor muestra la expresión “hannah.length”?
++        //b) ¿qué valor es retornado por la invocación del método “hannah.charAt(12)”?
++        //c) Escribe una expresión que referencie la letra “b” en la string referida por “hannah"
++
++        public static void main(String[] args) {
++            String hannah = "Did Hannah see bees? Hannah did.";
++            System.out.println(hannah.length());
++            System.out.println(hannah.charAt(12));
++            System.out.println(hannah.contains("b"));
++        }
++
++    //Ej10:
++        //¿Cuán larga es las string devuelta por la siguiente expresión? ¿cuál es la string?
++            //"Was it a car or a cat I saw?".substring(9, 12)
++
++        // car
++}
+Index: ../UT1_EJERCICIOS_DOMICILIARIOS/src/TA/Ej3.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../UT1_EJERCICIOS_DOMICILIARIOS/src/TA/Ej3.java b/../UT1_EJERCICIOS_DOMICILIARIOS/src/TA/Ej3.java
+new file mode 100644
+--- /dev/null	(date 1681816714973)
++++ b/../UT1_EJERCICIOS_DOMICILIARIOS/src/TA/Ej3.java	(date 1681816714973)
+@@ -0,0 +1,9 @@
++package TA;
++
++
++
++public class Ej3 {
++    //El mismo del marcapasos
++
++    //UT1_PD8 -> Marcapasos;
++}
+Index: ../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej7.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej7.java b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej7.java
+new file mode 100644
+--- /dev/null	(date 1681816714973)
++++ b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Ej7.java	(date 1681816714973)
+@@ -0,0 +1,38 @@
++package UT1_PD5;
++
++public class Ej7 {
++    /**
++     * - setLength Este método establece la longitud del StringBuilder. Si newLength es menor que la longitud actual, los caracteres sobrantes se eliminan. Si newLength es mayor que la longitud actual, se agregan caracteres nulos ('\0') para alcanzar la nueva longitud.
++     * - ensureCapacity Este método garantiza que el StringBuilder tenga una capacidad mínima. Si la capacidad actual es menor que minimumCapacity, la capacidad se aumenta automáticamente.
++     * - append Este método agrega una cadena al final del StringBuilder. Puede tomar varios tipos de argumentos, incluyendo cadenas, caracteres, arreglos de caracteres y muchos otros.
++     * - insert Este método inserta una cadena en una posición específica dentro del StringBuilder. Puede tomar varios tipos de argumentos, incluyendo cadenas, caracteres, arreglos de caracteres y muchos otros.
++     * - delete Este método elimina una parte del contenido del StringBuilder, especificando un índice de inicio y un índice de finalización.
++     * - deleteCharAt Este método elimina el carácter en la posición index del StringBuilder.
++     * - reverse Este método invierte el orden de los caracteres en el StringBuilder.
++     * */
++
++    public static void main(String[] args) {
++        StringBuilder sb = new StringBuilder("Hola Mundo!");
++
++        // Usando setLength()
++        sb.setLength(4); // sb = "Hola"
++
++        // Usando ensureCapacity()
++        sb.ensureCapacity(20);
++
++        // Usando append()
++        sb.append(" Mundo!"); // sb = "Hola Mundo!"
++
++        // Usando insert()
++        sb.insert(5, "amigo "); // sb = "Hola amigo Mundo!"
++
++        // Usando delete()
++        sb.delete(5, 11); // sb = "HolaMundo!"
++
++        // Usando deleteCharAt()
++        sb.deleteCharAt(4); // sb = "HoaMundo!"
++
++        // Usando reverse()
++        sb.reverse(); // sb = "!odnuMaoH"
++    }
++}
+Index: ../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Vocales.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Vocales.java b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Vocales.java
+new file mode 100644
+--- /dev/null	(date 1681816714973)
++++ b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD5/Vocales.java	(date 1681816714973)
+@@ -0,0 +1,9 @@
++package UT1_PD5;
++
++public enum Vocales {
++    A,
++    E,
++    I,
++    O,
++    U
++}
+Index: ../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD7/Ej1.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package UT1_PD7;\r\n\r\nimport java.util.Arrays;\r\n\r\npublic class Ej1 {\r\n  public static void main(String[] args){\r\n      String s = \"1\";\r\n      while (s != \"1000\") {\r\n          s += \"0\";\r\n\r\n\r\n          System.out.println(s);\r\n      }\r\n  }\r\n}\r\n\r\n//¿Por qué esto es así?\r\n//¿Qué diferencia representa con otros lenguajes como C#?\r\n\r\n//R: porque los strings se tienen que comparar con equals();\r\n//R: en C# si se puede.
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD7/Ej1.java b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD7/Ej1.java
+--- a/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD7/Ej1.java	(revision ada67021e83174ad8e9d027823c03c88fcf87dd6)
++++ b/../UT1_EJERCICIOS_DOMICILIARIOS/src/UT1_PD7/Ej1.java	(date 1681816714973)
+@@ -3,6 +3,7 @@
+ import java.util.Arrays;
+ 
+ public class Ej1 {
++<<<<<<< HEAD
+   public static void main(String[] args){
+       String s = "1";
+       while (s != "1000") {
+@@ -18,4 +19,24 @@
+ //¿Qué diferencia representa con otros lenguajes como C#?
+ 
+ //R: porque los strings se tienen que comparar con equals();
+-//R: en C# si se puede.
+\ No newline at end of file
++//R: en C# si se puede.
++=======
++    public static void main(String[] args) {
++        String s = "1";
++
++        while (s != "1000") {
++            s += "0";
++        }
++
++
++
++
++    }
++
++
++
++
++    //¿Por qué esto es así? ¿Qué diferencia representa con otros lenguajes como C#?
++    //R: En java no se pueden comparar string con ==, es necesario usar .equals(""); o .equalsIgnoreCase("");
++}
++>>>>>>> 34624692425c17b0e48a0f4b0e22f8991e7556dd
+Index: src/PD9/main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD9/main.java b/src/PD9/main.java
+new file mode 100644
+--- /dev/null	(date 1681817290478)
++++ b/src/PD9/main.java	(date 1681817290478)
+@@ -0,0 +1,33 @@
++package PD9;
++
++public class main {
++    public static void main(String[] args) {
++        String bien = "{{}{}}";
++        System.out.println(Expresion.controlCorchetes(bien.split("")));
++
++        String mal = "{}{}}{}";
++        System.out.println(Expresion.controlCorchetes(mal.split("")));
++
++    }
++
++    public class Expresion{
++        public static boolean controlCorchetes(String[] parent){
++            int controlador = 0;
++            for (int i = 0; i < parent.length; i++) {
++                switch (parent[i]){
++                    case "{":
++                        controlador += 1;
++                        break;
++
++                    case "}":
++                        controlador -= 1;
++                        break;
++                }
++                if(controlador < 0){
++                    return false;
++                }
++            }
++            return true;
++        }
++    }
++}
+Index: src/PD6/suc1.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD6/suc1.txt b/src/PD6/suc1.txt
+new file mode 100644
+--- /dev/null	(date 1681820057753)
++++ b/src/PD6/suc1.txt	(date 1681820057753)
+@@ -0,0 +1,107 @@
++Dubai
++Nueva York
++Shanghai
++Hong Kong
++Chicago
++Shenzhen
++Tokio
++Singapur
++Panama City
++Guangzhou
++Yakarta
++Houston
++Chongqing
++Bangkok
++Los Angeles
++Kuala Lumpur
++Busan
++Atlanta
++Nankin
++Doha
++Seul
++Abu Dhabi
++Toronto
++Manila
++Dalian
++Wuhan
++Melbourne
++Sidney
++Moscu
++Dallas
++Frankfurt
++Filadelfia
++Incheon
++Tianjin
++Pekin
++Ciudad de Kuwait
++Qingdao
++Wuxi
++Suzhou
++Madrid
++Seattle
++Mineapolis
++Charlotte
++Sharjah
++La Meca
++Estambul
++Miami
++San Francisco
++Denver
++Cleveland
++Osaka
++Hangzhou
++Hanoi
++Riad
++Nagoya
++Macao
++Manama
++Brisbane
++Londres
++Xian
++Paris 
++Boston
++Pittsburgh
++Cincinnati
++Ciudad de Mexico
++Calgary
++Montreal
++Caracas
++Mumbai
++Taipei
++Kaohsiung
++Nanchang
++Changsha
++Ulsan
++Nanning
++Karachi
++Bucheon
++Zhongshan
++Gold Coast
++Perth
++Milan
++Jersey City
++Detroit
++Nueva Orleans
++Austin
++Indianapolis
++Tulsa
++Mobile
++Vancouver
++Ciudad Ho Chi Minh
++Xiamen
++Ajman
++Yokohama
++Kawasaki
++Xian
++Xian
++Ningbo
++Wenzhou
++Urumqi
++Pulau Pinang
++Guiyang
++Ramat Gan
++Nantong
++Dongguan
++Changzhou
++Izumisano
++Foshan
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+new file mode 100644
+--- /dev/null	(date 1681816714973)
++++ b/.idea/misc.xml	(date 1681816714973)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="17" project-jdk-type="JavaSDK">
++    <output url="file://$PROJECT_DIR$/out" />
++  </component>
++</project>
+\ No newline at end of file
+Index: src/PD6/suc2.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD6/suc2.txt b/src/PD6/suc2.txt
+new file mode 100644
+--- /dev/null	(date 1681820057778)
++++ b/src/PD6/suc2.txt	(date 1681820057778)
+@@ -0,0 +1,1 @@
++Tokio
+Index: src/PD8/sucursales.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/PD8/sucursales.txt b/src/PD8/sucursales.txt
+new file mode 100644
+--- /dev/null	(date 1681817355151)
++++ b/src/PD8/sucursales.txt	(date 1681817355151)
+@@ -0,0 +1,15 @@
++Montevideo
++Canelones
++Artigas
++Rivera
++Maldonado
++Rocha
++Pando
++Salto
++Paysandu
++Trinidad
++Florida
++Quebracho
++Colonia
++Acegua
++Piriapolis
+\ No newline at end of file
